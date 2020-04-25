@@ -1,0 +1,21 @@
+{
+  "name": "report-api",
+  "version": "1.0.0",
+  "description": "Api to generate report",
+  "main": "app.js",
+  "author": "Ibnu Hasan A.",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "jspdf": "^1.5.3"
+  },
+  "devDependencies": {
+    "eslint": "^6.8.0",
+    "eslint-plugin-prettier": "^3.1.1",
+    "prettier": "^2.0.4"
+  }
+}
