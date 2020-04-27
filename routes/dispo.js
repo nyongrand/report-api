@@ -5,8 +5,9 @@ var path = require("path");
 var pdfMakePrinter = require("../src/printer");
 
 /* GET users listing. */
-router.get("/:id", function (req, res) {
-  const dd = docDefinition();
+router.post("/", function (req, res) {
+  const mail = req.body;
+  const dd = docDefinition(mail);
 
   var fontDescriptors = {
     Roboto: {
@@ -24,9 +25,18 @@ router.get("/:id", function (req, res) {
   doc.end();
 });
 
-function docDefinition() {
-  var title = "DISPOSISI SURAT MASUK";
-  var instansi = "RUMAH SAKIT MUHAMMADIYAH LAMONGAN";
+function docDefinition(mail) {
+  const title = "DISPOSISI SURAT MASUK";
+  const instansi = "RUMAH SAKIT MUHAMMADIYAH LAMONGAN";
+
+  const dipositions = [["Jabatan", "Usul / Pertimbangan", "Tanggal"]];
+  mail.dispositions.forEach(element => {
+    if (element.note && element.date) {
+      dipositions.push(
+        [element.from, element.note, element.date]
+      );
+    }
+  });
 
   return {
     pageSize: "A4",
@@ -34,17 +44,19 @@ function docDefinition() {
     content: [
       { text: title, style: "header" },
       { text: instansi, style: "subheader" },
+      { text: `ID: ${mail.id}` },
       {
         table: {
-          widths: ["auto", "*", "auto", "*", "auto", "*"],
+          widths: ["auto", "*", "auto", "*"],
           body: [
-            ["Tgl. Terima", ": 17-Agus-20", "Target", ": 20-Des-20", "Arsip", ": 1Keperawatan"],
-            ["No Agenda", ": 17220", "Nama File", ": 01021234.pdf", "Kode Arsip", ": 1"],
+            ["Tgl Terima", `: ${mail.received}`, "Nama File", `: ${mail.filename}`],
+            ["Penyelesaian", `: ${mail.deadline}`, "Arsip", `: ${mail.archive}`],
+            ["No Agenda", `: ${mail.agenda}`, "Kode", `: ${mail.archiveCode}`],
           ]
         },
-        style: "table",
+        style: "sender",
         layout: {
-          hLineWidth: (i) => (i + 1) % 2,
+          hLineWidth: (i) => i % 3 == 0 ? 1 : 0,
           vLineWidth: (i) => (i + 1) % 2,
         }
       },
@@ -52,36 +64,32 @@ function docDefinition() {
         table: {
           widths: ["auto", "auto", "*"],
           body: [
-            ["ID Surat", ":", "Target"],
-            ["Tanggal Surat", ":", "Nama File"],
-            ["Nomor Surat", ":", "Nama File"],
-            ["Pengirim", ":", "Nama File"],
-            ["Isi Surat", ":", "Nama File"],
+            ["Tanggal Surat", ":", mail.sent],
+            ["Nomor Surat", ":", mail.refNumber],
+            ["Pengirim", ":", mail.sender],
+            ["Isi Surat", ":", mail.subject],
           ]
         },
         style: "table",
         layout: "noBorders"
       },
-      {
-        table: {
-          widths: [100, "*", 60],
-          body: [
-            ["Jabatan", "Usul / Pertimbangan", "Tanggal"],
-            ["Tim Koordinator Pendidikan Surat", "Conceptually tables are similar to columns. They can however have headers, borders and cells spanning over multiple columns/rows.", "19-Des-20"],
-          ]
-        },
-        style: "table",
-        layout: {
-          hLineWidth: (i) => i > 1 ? 1 : 0,
-          vLineWidth: () => 0,
-          hLineColor: function () {
-            return "#AAAAAA";
-          },
-          fillColor: function (row) {
-            return (row === 0) ? "#CCCCCC" : null;
-          }
-        }
-      },
+      // {
+      //   table: {
+      //     widths: [100, "*", 65],
+      //     body: dipositions
+      //   },
+      //   style: "table",
+      //   layout: {
+      //     hLineWidth: (i) => i > 1 ? 1 : 0,
+      //     vLineWidth: () => 0,
+      //     hLineColor: function () {
+      //       return "#AAAAAA";
+      //     },
+      //     fillColor: function (row) {
+      //       return (row === 0) ? "#CCCCCC" : null;
+      //     }
+      //   }
+      // },
       {
         text: "Hasil Disposisi",
         style: {
@@ -92,11 +100,8 @@ function docDefinition() {
       },
       {
         table: {
-          widths: [100, "*", 60],
-          body: [
-            ["Jabatan", "Usul / Pertimbangan", "Tanggal"],
-            ["Tim Koordinator Pendidikan Surat", "Conceptually tables are similar to columns. They can however have headers, borders and cells spanning over multiple columns/rows.", "19-Des-20"],
-          ]
+          widths: [100, "*", 65],
+          body: dipositions
         },
         style: "table",
         layout: {
@@ -121,8 +126,12 @@ function docDefinition() {
       },
       subheader: {
         fontSize: 14,
+        bold: true,
         margin: [0, 0, 0, 20],
         alignment: "center"
+      },
+      sender: {
+        margin: [0, 2, 0, 8]
       },
       table: {
         margin: [0, 10, 0, 10]
