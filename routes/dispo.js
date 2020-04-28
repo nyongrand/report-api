@@ -29,12 +29,20 @@ function docDefinition(mail) {
   const title = "DISPOSISI SURAT MASUK";
   const instansi = "RUMAH SAKIT MUHAMMADIYAH LAMONGAN";
 
-  const dipositions = [["Jabatan", "Usul / Pertimbangan", "Tanggal"]];
+  const pertimbangan = [["Jabatan", "Usul / Pertimbangan", "Tanggal"]];
+  const dipositions = [["Diteruskan Ke", "Isi Disposisi", "Tanggal"]];
+
   mail.dispositions.forEach(element => {
     if (element.note && element.date) {
-      dipositions.push(
-        [element.from, element.note, element.date]
-      );
+      if (element.level == 1) {
+        dipositions.push(
+          [element.from, element.note, element.date]
+        );
+      } else if (element.level > 1) {
+        pertimbangan.push(
+          [element.from, element.note, element.date]
+        );
+      }
     }
   });
 
@@ -73,27 +81,27 @@ function docDefinition(mail) {
         style: "table",
         layout: "noBorders"
       },
-      // {
-      //   table: {
-      //     widths: [100, "*", 65],
-      //     body: dipositions
-      //   },
-      //   style: "table",
-      //   layout: {
-      //     hLineWidth: (i) => i > 1 ? 1 : 0,
-      //     vLineWidth: () => 0,
-      //     hLineColor: function () {
-      //       return "#AAAAAA";
-      //     },
-      //     fillColor: function (row) {
-      //       return (row === 0) ? "#CCCCCC" : null;
-      //     }
-      //   }
-      // },
+      {
+        table: {
+          widths: [100, "*", 65],
+          body: pertimbangan
+        },
+        style: "table",
+        layout: {
+          hLineWidth: (i) => i > 1 ? 1 : 0,
+          vLineWidth: () => 0,
+          hLineColor: function () {
+            return "#AAAAAA";
+          },
+          fillColor: function (row) {
+            return (row === 0) ? "#CCCCCC" : null;
+          }
+        }
+      },
       {
         text: "Hasil Disposisi",
         style: {
-          fontSize: 14,
+          fontSize: 3,
           bold: true,
           decoration: "underline",
         }
