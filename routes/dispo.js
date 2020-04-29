@@ -55,16 +55,15 @@ function docDefinition(mail) {
       { text: `ID: ${mail.id}` },
       {
         table: {
-          widths: ["auto", "*", "auto", "*"],
+          widths: ["auto", "auto", "auto", "auto", "auto", "*"],
           body: [
-            ["Tgl Terima", `: ${mail.received}`, "Nama File", `: ${mail.filename}`],
-            ["Penyelesaian", `: ${mail.deadline}`, "Arsip", `: ${mail.archive}`],
-            ["No Agenda", `: ${mail.agenda}`, "Kode", `: ${mail.archiveCode}`],
+            ["Tgl Terima", `: ${mail.received}`, "Target Selesai", `: ${mail.deadline}`, "Arsip", `: ${mail.archive}`],
+            ["No Agenda", `: ${mail.agenda}`, "Nama File", `: ${mail.filename}`, "Kode", `: ${mail.archiveCode}`],
           ]
         },
         style: "sender",
         layout: {
-          hLineWidth: (i) => i % 3 == 0 ? 1 : 0,
+          hLineWidth: (i) => (i + 1) % 2,
           vLineWidth: (i) => (i + 1) % 2,
         }
       },
