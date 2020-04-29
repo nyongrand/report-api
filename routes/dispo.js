@@ -141,7 +141,7 @@ function docDefinition(mail) {
         margin: [0, 2, 0, 8]
       },
       table: {
-        margin: [0, 10, 0, 10]
+        margin: [0, 5, 0, 15]
       },
     },
   };
