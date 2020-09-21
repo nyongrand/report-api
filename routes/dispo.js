@@ -38,7 +38,7 @@ function docDefinition(report) {
 
   report.dispositions.forEach(element => {
     if (element.note && element.date) {
-      if (element.level == 1) {
+      if (element.level != 1) {
         pertimbangan.push(
           [element.from, element.note, element.date]
         );
