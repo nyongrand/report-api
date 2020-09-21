@@ -1,16 +1,18 @@
 var createError = require("http-errors");
 var express = require("express");
 
-// var indexRouter = require("./routes/index");
-var dispoRouter = require("./routes/dispo");
+// router file export
+var dispoSuratMasukRouter = require("./routes/dispo_suratmasuk");
+var dispoMemoInternRouter = require("./routes/dispo_memointern");
 
 var app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-//app.use("/", indexRouter);
-app.use("/dispo", dispoRouter);
+// router descriptions
+app.use("/dispo/suratmasuk", dispoSuratMasukRouter);
+app.use("/dispo/memointern", dispoMemoInternRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
