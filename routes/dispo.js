@@ -86,7 +86,7 @@ function docDefinition(report) {
       },
       {
         table: {
-          widths: [100, "*", 65],
+          widths: [100, "*", 70],
           body: pertimbangan
         },
         style: "table",
@@ -111,7 +111,7 @@ function docDefinition(report) {
       },
       {
         table: {
-          widths: [100, "*", 65],
+          widths: [100, "*", 75],
           body: dipositions
         },
         style: "table",
