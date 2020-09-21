@@ -31,10 +31,11 @@ router.post("/", function (req, res) {
  */
 function docDefinition(report) {
   const instansi = "RUMAH SAKIT MUHAMMADIYAH LAMONGAN";
-  // const contact = "Jl. Jaksa Agung Suprapto No. 76 RT 03 RW 03 Lamongan, Telp. 0322-322834 (Hunting) Fax. 0322-314048";
+  const contact = "Jl. Jaksa Agung Suprapto No. 76 RT 03 RW 03 Lamongan, Telp. 0322-322834 (Hunting) Fax. 0322-314048";
 
   const pertimbangan = [["Jabatan", "Usul / Pertimbangan", "Tanggal"]];
-  const dipositions = [["Diteruskan Ke", "Isi Disposisi", "Tanggal"]];
+  const dispositions = [["Diteruskan Ke", "Isi Disposisi", "Tanggal"]];
+  const expeditions = [["No", "Tgl Kirim", "Penerima", "Dibaca"]];
 
   report.dispositions.forEach(element => {
     if (element.note && element.date) {
@@ -43,11 +44,15 @@ function docDefinition(report) {
           [element.from, element.note, element.date]
         );
       } else {
-        dipositions.push(
+        dispositions.push(
           [element.from, element.note, element.date]
         );
       }
     }
+  });
+
+  report.expeditions.forEach((element, index) => {
+    expeditions.push(index + 1, element.date, element.name, element.read);
   });
 
   return {
@@ -112,7 +117,7 @@ function docDefinition(report) {
       {
         table: {
           widths: [100, "*", 75],
-          body: dipositions
+          body: dispositions
         },
         style: "table",
         layout: {
@@ -123,6 +128,39 @@ function docDefinition(report) {
           },
           fillColor: function (row) {
             return (row === 0) ? "#CCCCCC" : null;
+          }
+        },
+        pageBreak: "after",
+      },
+      { text: report.title, style: "header" },
+      { text: instansi, style: "subheader" },
+      { text: contact, style: "contact" },
+      {
+        table: {
+          widths: ["auto", "auto", "auto", "auto", "auto", "*"],
+          body: [
+            ["Tgl Terima", `: ${report.received}`, "Target Selesai", `: ${report.deadline}`, "Arsip", `: ${report.archive}`],
+            ["No Agenda", `: ${report.agenda}`, "Nama File", `: ${report.filename}`, "Kode", `: ${report.archiveCode}`],
+          ]
+        },
+        style: "sender",
+        layout: {
+          hLineWidth: (i) => (i + 1) % 2,
+          vLineWidth: (i) => (i + 1) % 2,
+        }
+      },
+      {
+        table: {
+          widths: ["auto", "auto", "*", "auto"],
+          body: expeditions
+        },
+        style: "table",
+        layout: {
+          vLineWidth: () => 0,
+          hLineWidth: function (i) {
+            var firsOrLast = i % 6 === 0 ? 0.5 : 0;
+            if (i === 3) firsOrLast += 2;
+            return firsOrLast;
           }
         }
       },
@@ -139,6 +177,12 @@ function docDefinition(report) {
         fontSize: 14,
         bold: true,
         margin: [0, 0, 0, 20],
+        alignment: "center"
+      },
+      contact: {
+        fontSize: 10,
+        italics: true,
+        margin: [0, 0, 0, 0],
         alignment: "center"
       },
       sender: {
