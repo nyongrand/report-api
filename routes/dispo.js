@@ -104,7 +104,7 @@ function docDefinition(report) {
       {
         text: "Hasil Disposisi",
         style: {
-          fontSize: 3,
+          fontSize: 13,
           bold: true,
           decoration: "underline",
         }
