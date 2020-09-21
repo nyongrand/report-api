@@ -6,8 +6,8 @@ var pdfMakePrinter = require("../src/printer");
 
 /* GET users listing. */
 router.post("/", function (req, res) {
-  const mail = req.body;
-  const dd = docDefinition(mail);
+  const report = req.body;
+  const dd = docDefinition(report);
 
   var fontDescriptors = {
     Roboto: {
@@ -25,14 +25,18 @@ router.post("/", function (req, res) {
   doc.end();
 });
 
-function docDefinition(mail) {
-  const title = "DISPOSISI SURAT MASUK";
+/**
+ * Create document definition from report object
+ * @param {any} report 
+ */
+function docDefinition(report) {
   const instansi = "RUMAH SAKIT MUHAMMADIYAH LAMONGAN";
+  // const contact = "Jl. Jaksa Agung Suprapto No. 76 RT 03 RW 03 Lamongan, Telp. 0322-322834 (Hunting) Fax. 0322-314048";
 
   const pertimbangan = [["Jabatan", "Usul / Pertimbangan", "Tanggal"]];
   const dipositions = [["Diteruskan Ke", "Isi Disposisi", "Tanggal"]];
 
-  mail.dispositions.forEach(element => {
+  report.dispositions.forEach(element => {
     if (element.note && element.date) {
       if (element.level == 1) {
         dipositions.push(
@@ -50,15 +54,15 @@ function docDefinition(mail) {
     pageSize: "A4",
     pageOrientation: "portrait",
     content: [
-      { text: title, style: "header" },
+      { text: report.title, style: "header" },
       { text: instansi, style: "subheader" },
-      { text: `ID: ${mail.id}` },
+      { text: `ID: ${report.id}` },
       {
         table: {
           widths: ["auto", "auto", "auto", "auto", "auto", "*"],
           body: [
-            ["Tgl Terima", `: ${mail.received}`, "Target Selesai", `: ${mail.deadline}`, "Arsip", `: ${mail.archive}`],
-            ["No Agenda", `: ${mail.agenda}`, "Nama File", `: ${mail.filename}`, "Kode", `: ${mail.archiveCode}`],
+            ["Tgl Terima", `: ${report.received}`, "Target Selesai", `: ${report.deadline}`, "Arsip", `: ${report.archive}`],
+            ["No Agenda", `: ${report.agenda}`, "Nama File", `: ${report.filename}`, "Kode", `: ${report.archiveCode}`],
           ]
         },
         style: "sender",
@@ -71,10 +75,10 @@ function docDefinition(mail) {
         table: {
           widths: ["auto", "auto", "*"],
           body: [
-            ["Tanggal Surat", ":", mail.sent],
-            ["Nomor Surat", ":", mail.refNumber],
-            ["Pengirim", ":", mail.sender],
-            ["Isi Surat", ":", mail.subject],
+            ["Tanggal Surat", ":", report.sent],
+            ["Nomor Surat", ":", report.refNumber],
+            ["Pengirim", ":", report.sender],
+            ["Isi Surat", ":", report.subject],
           ]
         },
         style: "table",
