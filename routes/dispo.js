@@ -39,11 +39,11 @@ function docDefinition(report) {
   report.dispositions.forEach(element => {
     if (element.note && element.date) {
       if (element.level == 1) {
-        dipositions.push(
+        pertimbangan.push(
           [element.from, element.note, element.date]
         );
-      } else if (element.level > 1) {
-        pertimbangan.push(
+      } else {
+        dipositions.push(
           [element.from, element.note, element.date]
         );
       }
@@ -86,7 +86,7 @@ function docDefinition(report) {
       },
       {
         table: {
-          widths: [100, "*", 70],
+          widths: [100, "*", 75],
           body: pertimbangan
         },
         style: "table",
