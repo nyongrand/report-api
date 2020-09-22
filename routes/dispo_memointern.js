@@ -58,7 +58,7 @@ function docDefinition(report) {
 
   const layoutDetails = {
     table: {
-      widths: [150, "auto", "*"],
+      widths: [93, "auto", "*"],
       body: [
         ["Tanggal Memo", ":", report.sent],
         ["Nomor Memo", ":", report.refNumber],
