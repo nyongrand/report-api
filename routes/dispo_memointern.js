@@ -31,11 +31,11 @@ router.post("/", function (req, res) {
  */
 function docDefinition(report) {
   const instansi = "RUMAH SAKIT MUHAMMADIYAH LAMONGAN";
-  // const contact = "Jl. Jaksa Agung Suprapto No. 76 RT 03 RW 03 Lamongan, Telp. 0322-322834 (Hunting) Fax. 0322-314048";
+  const contact = "Jl. Jaksa Agung Suprapto No. 76 RT 03 RW 03 Lamongan, Telp. 0322-322834 (Hunting) Fax. 0322-314048";
 
+  // pertimbangan & disposisi list
   const pertimbangan = [["Jabatan", "Usul / Pertimbangan", "Tanggal"]];
-  const dipositions = [["Diteruskan Ke", "Isi Disposisi", "Tanggal"]];
-
+  const dispositions = [["Diteruskan Ke", "Isi Disposisi", "Tanggal"]];
   report.dispositions.forEach(element => {
     if (element.note && element.date) {
       if (element.level != 1) {
@@ -43,12 +43,85 @@ function docDefinition(report) {
           [element.from, element.note, element.date]
         );
       } else {
-        dipositions.push(
+        dispositions.push(
           [element.from, element.note, element.date]
         );
       }
     }
   });
+
+  // ekspedisi list
+  const expeditions = [["No", "Tgl Kirim", "Penerima", "Dibaca"]];
+  report.expeditions.forEach((element, index) => {
+    expeditions.push([index + 1, element.date, element.name, element.read]);
+  });
+
+  const layoutDetails = {
+    table: {
+      widths: [150, "auto", "*"],
+      body: [
+        ["Tanggal Memo", ":", report.sent],
+        ["Nomor Memo", ":", report.refNumber],
+        ["Pengirim", ":", report.sender],
+        ["Jabatan", ":", report.function],
+        ["Perihal", ":", report.subject],
+      ]
+    },
+    margin: [0, 5, 0, 15],
+    layout: "noBorders"
+  };
+
+  const layoutPertimbangan = {
+    table: {
+      widths: [100, "*", 75],
+      body: pertimbangan
+    },
+    margin: [0, 5, 0, 15],
+    layout: {
+      hLineWidth: (i) => i > 1 ? 1 : 0,
+      vLineWidth: () => 0,
+      hLineColor: function () {
+        return "#AAAAAA";
+      },
+      fillColor: function (row) {
+        return (row === 0) ? "#CCCCCC" : null;
+      }
+    }
+  };
+
+  const layoutDisposisi = {
+    table: {
+      widths: [100, "*", 75],
+      body: dispositions
+    },
+    margin: [0, 5, 0, 15],
+    layout: {
+      hLineWidth: (i) => i > 1 ? 1 : 0,
+      vLineWidth: () => 0,
+      hLineColor: function () {
+        return "#AAAAAA";
+      },
+      fillColor: function (row) {
+        return (row === 0) ? "#CCCCCC" : null;
+      }
+    },
+    pageBreak: "after",
+  };
+
+  const layoutExpeditions = {
+    table: {
+      widths: ["auto", "auto", "*", "auto"],
+      body: expeditions
+    },
+    margin: [0, 5, 0, 15],
+    layout: {
+      hLineWidth: () => 0,
+      vLineWidth: () => 0,
+      fillColor: function (row) {
+        return (row === 0) ? "#CCCCCC" : null;
+      }
+    }
+  };
 
   return {
     pageSize: "A4",
@@ -56,52 +129,32 @@ function docDefinition(report) {
     content: [
       { text: report.title, style: "header" },
       { text: instansi, style: "subheader" },
+      { text: contact, style: "contact" },
+
       { text: `ID: ${report.id}` },
       {
         table: {
           widths: ["auto", "auto", "auto", "auto", "auto", "*"],
           body: [
-            ["Tgl Terima", `: ${report.received}`, "Target Selesai", `: ${report.deadline}`, "Arsip", `: ${report.archive}`],
-            ["No Agenda", `: ${report.agenda}`, "Nama File", `: ${report.filename}`, "Kode", `: ${report.archiveCode}`],
+            [
+              "Tgl Terima", `: ${report.received}`,
+              "Target Selesai", `: ${report.deadline}`,
+              "Arsip", `: ${report.archive}`
+            ],
+            [
+              "No Agenda", `: ${report.agenda}`,
+              "Nama File", `: ${report.filename}`,
+              "Kode", `: ${report.archiveCode}`
+            ],
           ]
         },
-        style: "sender",
+        margin: [0, 2, 0, 8],
         layout: {
           hLineWidth: (i) => (i + 1) % 2,
           vLineWidth: (i) => (i + 1) % 2,
         }
       },
-      {
-        table: {
-          widths: ["auto", "auto", "*"],
-          body: [
-            ["Tanggal Surat", ":", report.sent],
-            ["Nomor Surat", ":", report.refNumber],
-            ["Pengirim", ":", report.sender],
-            ["Jabatan", ":", report.function],
-            ["Isi Surat", ":", report.subject],
-          ]
-        },
-        style: "table",
-        layout: "noBorders"
-      },
-      {
-        table: {
-          widths: [100, "*", 75],
-          body: pertimbangan
-        },
-        style: "table",
-        layout: {
-          hLineWidth: (i) => i > 1 ? 1 : 0,
-          vLineWidth: () => 0,
-          hLineColor: function () {
-            return "#AAAAAA";
-          },
-          fillColor: function (row) {
-            return (row === 0) ? "#CCCCCC" : null;
-          }
-        }
-      },
+      layoutDetails,
       {
         text: "Hasil Disposisi",
         style: {
@@ -110,43 +163,62 @@ function docDefinition(report) {
           decoration: "underline",
         }
       },
+      layoutPertimbangan,
+      layoutDisposisi,
+
+      { text: report.title, style: "header" },
+      { text: instansi, style: "subheader" },
+      { text: contact, style: "contact" },
+
       {
         table: {
-          widths: [100, "*", 75],
-          body: dipositions
+          widths: ["auto", "auto", "auto", "auto", "auto", "*"],
+          body: [
+            [
+              "Tgl Terima", `: ${report.received}`,
+              "Target Selesai", `: ${report.deadline}`,
+              "Arsip", `: ${report.archive}`
+            ],
+            [
+              "No Agenda", `: ${report.agenda}`,
+              "Nama File", `: ${report.filename}`,
+              "Kode", `: ${report.archiveCode}`
+            ],
+          ]
         },
-        style: "table",
+        margin: [0, 2, 0, 8],
         layout: {
-          hLineWidth: (i) => i > 1 ? 1 : 0,
-          vLineWidth: () => 0,
-          hLineColor: function () {
-            return "#AAAAAA";
-          },
-          fillColor: function (row) {
-            return (row === 0) ? "#CCCCCC" : null;
-          }
+          hLineWidth: (i) => (i + 1) % 2,
+          vLineWidth: (i) => (i + 1) % 2,
         }
       },
+      {
+        text: "Hasil Pengiriman",
+        style: {
+          fontSize: 13,
+          bold: true,
+          decoration: "underline",
+        }
+      },
+      layoutExpeditions,
     ],
 
     styles: {
       header: {
+        alignment: "center",
         fontSize: 14,
         bold: true,
-        margin: [0, 0, 0, 0],
-        alignment: "center"
       },
       subheader: {
+        alignment: "center",
         fontSize: 14,
         bold: true,
+      },
+      contact: {
+        alignment: "center",
+        fontSize: 10,
+        italics: true,
         margin: [0, 0, 0, 20],
-        alignment: "center"
-      },
-      sender: {
-        margin: [0, 2, 0, 8]
-      },
-      table: {
-        margin: [0, 5, 0, 15]
       },
     },
   };
