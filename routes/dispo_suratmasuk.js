@@ -58,7 +58,7 @@ function docDefinition(report) {
   });
 
   // report sender
-  const senderTable = {
+  const layoutSender = {
     table: {
       widths: ["auto", "auto", "auto", "auto", "auto", "*"],
       body: [
@@ -83,7 +83,7 @@ function docDefinition(report) {
     }
   };
 
-  const detailsTable = {
+  const layoutDetails = {
     table: {
       widths: ["auto", "auto", "*"],
       body: [
@@ -99,7 +99,7 @@ function docDefinition(report) {
     layout: "noBorders"
   };
 
-  const pertimbanganTable = {
+  const layoutPertimbangan = {
     table: {
       widths: [100, "*", 75],
       body: pertimbangan
@@ -119,7 +119,7 @@ function docDefinition(report) {
     }
   };
 
-  const disposisiTable = {
+  const layoutDisposisi = {
     table: {
       widths: [100, "*", 75],
       body: dispositions
@@ -140,7 +140,7 @@ function docDefinition(report) {
     pageBreak: "after",
   };
 
-  const expeditionsLayout = {
+  const layoutExpeditions = {
     table: {
       widths: ["auto", "auto", "*", "auto"],
       body: expeditions
@@ -165,9 +165,9 @@ function docDefinition(report) {
       { text: report.title, style: "header" },
       { text: instansi, style: "subheader" },
       { text: `ID: ${report.id}` },
-      senderTable,
-      detailsTable,
-      pertimbanganTable,
+      layoutSender,
+      layoutDetails,
+      layoutPertimbangan,
       {
         text: "Hasil Disposisi",
         style: {
@@ -176,13 +176,21 @@ function docDefinition(report) {
           decoration: "underline",
         }
       },
-      disposisiTable,
+      layoutDisposisi,
 
       { text: report.title, style: "header" },
       { text: instansi, style: "subheader" },
       { text: contact, style: "contact" },
-      senderTable,
-      expeditionsLayout,
+      layoutSender,
+      {
+        text: "Hasil Pengiriman",
+        style: {
+          fontSize: 13,
+          bold: true,
+          decoration: "underline",
+        }
+      },
+      layoutExpeditions,
     ],
 
     styles: {
