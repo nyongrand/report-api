@@ -1,95 +1,82 @@
 var express = require("express");
 var router = express.Router();
-var path = require("path");
 
-var pdfMakePrinter = require("../src/printer");
+var PdfPrinter = require("pdfmake");
 
-/* GET users listing. */
 router.post("/", function (req, res) {
-  const report = req.body;
-  const dd = docDefinition(report);
-
-  var fontDescriptors = {
-    Roboto: {
-      normal: path.join(__dirname, "..", "src", "/fonts/Roboto-Regular.ttf"),
-      bold: path.join(__dirname, "..", "src", "/fonts/Roboto-Medium.ttf"),
-      italics: path.join(__dirname, "..", "src", "/fonts/Roboto-Italic.ttf"),
-      bolditalics: path.join(__dirname, "..", "src", "/fonts/Roboto-MediumItalic.ttf")
-    }
+  const fonts = {
+    Helvetica: {
+      normal: "Helvetica",
+      bold: "Helvetica-Bold",
+      italics: "Helvetica-Oblique",
+      bolditalics: "Helvetica-BoldOblique"
+    },
   };
 
-  var printer = new pdfMakePrinter(fontDescriptors);
-  var doc = printer.createPdfKitDocument(dd);
+  const printer = new PdfPrinter(fonts);
+  const docDefinition = getDocDefinition(req.body);
+  const pdfDoc = printer.createPdfKitDocument(docDefinition);
 
-  doc.pipe(res);
-  doc.end();
+  pdfDoc.pipe(res);
+  pdfDoc.end();
 });
 
 /**
  * Create document definition from report object
  * @param {any} report 
  */
-function docDefinition(report) {
+function getDocDefinition(report) {
   const instansi = "RUMAH SAKIT MUHAMMADIYAH LAMONGAN";
   const contact = "Jl. Jaksa Agung Suprapto No. 76 RT 03 RW 03 Lamongan, Telp. 0322-322834 (Hunting) Fax. 0322-314048";
 
-  // pertimbangan & disposisi list
-  const pertimbangan = [["Jabatan", "Usul / Pertimbangan", "Tanggal"]];
-  const dispositions = [["Diteruskan Ke", "Isi Disposisi", "Tanggal"]];
-  report.dispositions.forEach(element => {
-    if (element.note && element.date) {
-      if (element.level != 1) {
-        pertimbangan.push(
-          [element.from, element.note, element.date]
-        );
-      } else {
-        dispositions.push(
-          [element.from, element.note, element.date]
-        );
-      }
-    }
-  });
+  // considerations & disposisi list
+  const [considerations, dispositions] = filterDispositions(report.dispositions);
 
   // ekspedisi list
-  const expeditions = [["No", "Tgl Kirim", "Penerima", "Dibaca"]];
-  report.expeditions.forEach((element, index) => {
-    expeditions.push([index + 1, element.date, element.name, element.read]);
-  });
+  const [externals, internals] = filterExpeditions(report.expeditions, false);
 
+  // report details
   const layoutDetails = {
     table: {
-      widths: [93, "auto", "*"],
+      widths: [90, "auto", "*"],
       body: [
-        ["Tanggal Memo", ":", report.sent],
         ["Nomor Memo", ":", report.refNumber],
+        ["Tanggal Memo", ":", report.sent],
         ["Pengirim", ":", report.sender],
         ["Jabatan", ":", report.function],
         ["Perihal", ":", report.subject],
       ]
     },
-    margin: [0, 5, 0, 15],
-    layout: "noBorders"
+    margin: [0, 5, 0, 20],
+    layout: {
+      hLineWidth: function (i, node) {
+        return (i === node.table.body.length) ? 1 : 0;
+      },
+      vLineWidth: () => 0,
+    }
   };
 
-  const layoutPertimbangan = {
+  // consideration list
+  const layoutConsiderations = {
     table: {
       widths: [100, "*", 75],
-      body: pertimbangan
+      body: considerations
     },
     margin: [0, 5, 0, 15],
     layout: {
       hLineWidth: (i) => i > 1 ? 1 : 0,
       vLineWidth: () => 0,
-      hLineColor: function () {
-        return "#AAAAAA";
-      },
+      hLineColor: () => "#AAAAAA",
       fillColor: function (row) {
         return (row === 0) ? "#CCCCCC" : null;
-      }
-    }
+      },
+      paddingTop: () => 5,
+      paddingBottom: () => 2,
+    },
   };
 
-  const layoutDisposisi = {
+  // disposition list
+  const layoutDispositions = {
     table: {
       widths: [100, "*", 75],
       body: dispositions
@@ -98,12 +85,12 @@ function docDefinition(report) {
     layout: {
       hLineWidth: (i) => i > 1 ? 1 : 0,
       vLineWidth: () => 0,
-      hLineColor: function () {
-        return "#AAAAAA";
-      },
+      hLineColor: () => "#AAAAAA",
       fillColor: function (row) {
         return (row === 0) ? "#CCCCCC" : null;
-      }
+      },
+      paddingTop: () => 5,
+      paddingBottom: () => 2,
     },
     pageBreak: "after",
   };
@@ -111,21 +98,29 @@ function docDefinition(report) {
   const layoutExpeditions = {
     table: {
       widths: ["auto", "auto", "*", "auto"],
-      body: expeditions
+      body: externals || internals
     },
     margin: [0, 5, 0, 15],
     layout: {
       hLineWidth: () => 0,
       vLineWidth: () => 0,
+      hLineColor: () => "#AAAAAA",
       fillColor: function (row) {
         return (row === 0) ? "#CCCCCC" : null;
-      }
-    }
+      },
+      paddingTop: () => 5,
+      paddingBottom: () => 2,
+    },
   };
 
   return {
     pageSize: "A4",
     pageOrientation: "portrait",
+    defaultStyle: {
+      font: "Helvetica",
+      lineHeight: 1.15,
+    },
+
     content: [
       { text: report.title, style: "header" },
       { text: instansi, style: "subheader" },
@@ -148,10 +143,12 @@ function docDefinition(report) {
             ],
           ]
         },
-        margin: [0, 2, 0, 8],
+        margin: [0, 2, 0, 15],
         layout: {
           hLineWidth: (i) => (i + 1) % 2,
           vLineWidth: (i) => (i + 1) % 2,
+          paddingTop: () => 3,
+          paddingBottom: () => 0,
         }
       },
       layoutDetails,
@@ -163,8 +160,8 @@ function docDefinition(report) {
           decoration: "underline",
         }
       },
-      layoutPertimbangan,
-      layoutDisposisi,
+      layoutConsiderations,
+      layoutDispositions,
 
       { text: report.title, style: "header" },
       { text: instansi, style: "subheader" },
@@ -186,11 +183,13 @@ function docDefinition(report) {
             ],
           ]
         },
-        margin: [0, 2, 0, 8],
+        margin: [0, 2, 0, 15],
         layout: {
           hLineWidth: (i) => (i + 1) % 2,
           vLineWidth: (i) => (i + 1) % 2,
-        }
+          paddingTop: () => 3,
+          paddingBottom: () => 0,
+        },
       },
       {
         text: "Hasil Pengiriman",
@@ -222,6 +221,51 @@ function docDefinition(report) {
       },
     },
   };
+}
+
+/**
+ * Separate considerations & dispositions
+ * @param {*} reportDispositions 
+ */
+function filterDispositions(reportDispositions) {
+  const considerations = [["Jabatan", "Usul / Pertimbangan", "Tanggal"]];
+  const dispositions = [["Diteruskan Ke", "Isi Disposisi", "Tanggal"]];
+
+  reportDispositions.forEach(element => {
+    if (element.note && element.date) {
+      if (element.level != 1) {
+        considerations.push(
+          [element.from, element.note, element.date]
+        );
+      } else {
+        dispositions.push(
+          [element.from, element.note, element.date]
+        );
+      }
+    }
+  });
+
+  return [considerations, dispositions];
+}
+
+/**
+ * Separate expeditions, return equal list if separate = false
+ * @param {*} reportExpeditions 
+ * @param {*} separate 
+ */
+function filterExpeditions(reportExpeditions, separate) {
+  const externals = [["No", "Tgl Kirim", "Penerima", "Dibaca"]];
+  const internals = [["No", "Tgl Kirim", "Penerima", "Dibaca"]];
+
+  reportExpeditions.forEach((element, index) => {
+    if (!separate || element.type == 1)
+      externals.push([index + 1, element.date, element.name, element.read]);
+
+    if (!separate || element.type == 2)
+      internals.push([index + 1, element.date, element.name, element.read]);
+  });
+
+  return [externals, internals];
 }
 
 module.exports = router;

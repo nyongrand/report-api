@@ -1,18 +1,14 @@
 {
-  "name": "report-api",
+  "name": "report-generator",
   "version": "1.0.0",
-  "description": "Api to generate report",
+  "description": "Service to generate pdf report",
   "main": "app.js",
   "author": "Ibnu Hasan A.",
   "license": "MIT",
   "private": false,
-  "scripts": {
-    "start": "node ./bin/www"
-  },
   "dependencies": {
     "express": "^4.17.1",
-    "http-errors": "~1.6.3",
-    "pdfkit": "^0.11.0"
+    "pdfmake": "^0.1.68"
   },
   "devDependencies": {
     "eslint": "^6.8.0",
