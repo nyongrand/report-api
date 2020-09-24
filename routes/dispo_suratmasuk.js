@@ -256,12 +256,12 @@ function filterExpeditions(reportExpeditions, separate) {
   const externals = [["No", "Tgl Kirim", "Pengirim"]];
   const internals = [["No", "Tgl Kirim", "Penerima", "Dibaca"]];
 
-  reportExpeditions.forEach((element, index) => {
+  reportExpeditions.forEach(element => {
     if (element.type == 1)
-      externals.push([index + 1, element.date, element.name]);
+      externals.push([externals.length, element.date, element.name]);
 
     if (!separate || element.type == 2)
-      internals.push([index + 1, element.date, element.name, element.read]);
+      internals.push([internals.length, element.date, element.name, element.read]);
   });
 
   return [externals, internals];
