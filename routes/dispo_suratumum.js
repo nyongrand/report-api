@@ -39,7 +39,8 @@ function getDocDefinition(report) {
       body: [
         ["Nomor Surat", ":", report.refNumber],
         ["Tanggal Surat", ":", report.sent],
-        ["Pengirim", ":", report.sender],
+        ["Tujuan", ":", report.recipient],
+        ["Alamat", ":", report.address],
         ["Perihal", ":", report.subject],
       ]
     },
