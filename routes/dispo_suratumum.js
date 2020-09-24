@@ -100,7 +100,7 @@ function getDocDefinition(report) {
     },
 
     content: [
-      { text: report.title, style: "header" },
+      { text: `LEMBAR PENGIRIMAN ${report.title}`, style: "header" },
       { text: instansi, style: "subheader" },
       { text: contact, style: "contact" },
 

@@ -37,11 +37,11 @@ function getDocDefinition(report) {
     table: {
       widths: [90, "auto", "*"],
       body: [
-        ["Nomor Surat", ":", report.refNumber],
-        ["Tanggal Surat", ":", report.sent],
-        ["Tujuan", ":", report.recipient],
-        ["Alamat", ":", report.address],
-        ["Perihal", ":", report.subject],
+        ["Revisi Ke", ":", report.refNumber],
+        ["Tanggal", ":", report.sent],
+        ["Penyusun", ":", report.function],
+        ["Penyusun", ":", report.address],
+        ["Judul", ":", report.subject],
       ]
     },
     margin: [0, 5, 0, 20],
@@ -100,7 +100,7 @@ function getDocDefinition(report) {
     },
 
     content: [
-      { text: report.title, style: "header" },
+      { text: `LEMBAR PENGIRIMAN ${report.title}`, style: "header" },
       { text: instansi, style: "subheader" },
       { text: contact, style: "contact" },
 

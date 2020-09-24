@@ -122,7 +122,7 @@ function getDocDefinition(report) {
     },
 
     content: [
-      { text: report.title, style: "header" },
+      { text: `LEMBAR DISPOSISI ${report.title}`, style: "header" },
       { text: instansi, style: "subheader" },
       { text: contact, style: "contact" },
 
@@ -163,7 +163,7 @@ function getDocDefinition(report) {
       layoutConsiderations,
       layoutDispositions,
 
-      { text: report.title, style: "header" },
+      { text: `LEMBAR PENGIRIMAN ${report.title}`, style: "header" },
       { text: instansi, style: "subheader" },
       { text: contact, style: "contact" },
 
