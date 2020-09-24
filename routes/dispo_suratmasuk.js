@@ -231,16 +231,14 @@ function filterDispositions(reportDispositions) {
   const dispositions = [["Diteruskan Ke", "Isi Disposisi", "Tanggal"]];
 
   reportDispositions.forEach(element => {
-    if (element.note && element.date) {
-      if (element.level != 1) {
-        considerations.push(
-          [element.from, element.note, element.date]
-        );
-      } else {
-        dispositions.push(
-          [element.from, element.note, element.date]
-        );
-      }
+    if (element.level != 1) {
+      considerations.push(
+        [element.from, element.note, element.date]
+      );
+    } else {
+      dispositions.push(
+        [element.from, element.note, element.date]
+      );
     }
   });
 
