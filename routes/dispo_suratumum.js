@@ -105,30 +105,6 @@ function getDocDefinition(report) {
       { text: contact, style: "contact" },
 
       { text: `ID: ${report.id}` },
-      {
-        table: {
-          widths: ["auto", "auto", "auto", "auto", "auto", "*"],
-          body: [
-            [
-              "Tgl Terima", `: ${report.received}`,
-              "Target Selesai", `: ${report.deadline}`,
-              "Arsip", `: ${report.archive}`
-            ],
-            [
-              "No Agenda", `: ${report.agenda}`,
-              "Nama File", `: ${report.filename}`,
-              "Kode", `: ${report.archiveCode}`
-            ],
-          ]
-        },
-        margin: [0, 2, 0, 15],
-        layout: {
-          hLineWidth: (i) => (i + 1) % 2,
-          vLineWidth: (i) => (i + 1) % 2,
-          paddingTop: () => 3,
-          paddingBottom: () => 0,
-        }
-      },
       layoutDetails,
       {
         text: "Hasil Disposisi",
@@ -139,6 +115,14 @@ function getDocDefinition(report) {
         }
       },
       layoutExternals,
+      {
+        text: "Hasil Disposisi",
+        style: {
+          fontSize: 13,
+          bold: true,
+          decoration: "underline",
+        }
+      },
       layoutInternals,
     ],
 
