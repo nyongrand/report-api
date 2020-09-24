@@ -56,20 +56,20 @@ function getDocDefinition(report) {
   // eksternal expeditions list
   const layoutExternals = {
     table: {
-      widths: ["auto", "auto", "*", "auto"],
+      widths: ["auto", "auto", "*"],
       body: externals
     },
     margin: [0, 5, 0, 15],
     layout: {
       hLineWidth: () => 0,
       vLineWidth: () => 0,
-      hLineColor: function () {
-        return "#AAAAAA";
-      },
+      hLineColor: () => "#AAAAAA",
       fillColor: function (row) {
         return (row === 0) ? "#CCCCCC" : null;
-      }
-    }
+      },
+      paddingTop: () => 5,
+      paddingBottom: () => 2,
+    },
   };
 
   // eksternal expeditions list
@@ -83,7 +83,6 @@ function getDocDefinition(report) {
       hLineWidth: () => 0,
       vLineWidth: () => 0,
       hLineColor: () => "#AAAAAA",
-
       fillColor: function (row) {
         return (row === 0) ? "#CCCCCC" : null;
       },
@@ -109,7 +108,7 @@ function getDocDefinition(report) {
       {
         text: "Ekspedisi Ekstern",
         style: {
-          fontSize: 13,
+          fontSize: 12,
           bold: true,
           decoration: "underline",
         }
@@ -118,10 +117,10 @@ function getDocDefinition(report) {
       {
         text: "Ekspedisi Intern",
         style: {
-          fontSize: 13,
+          fontSize: 12,
           bold: true,
           decoration: "underline",
-        }
+        },
       },
       layoutInternals,
     ],
@@ -153,12 +152,12 @@ function getDocDefinition(report) {
  * @param {*} separate 
  */
 function filterExpeditions(reportExpeditions, separate) {
-  const externals = [["No", "Tgl Kirim", "Penerima", "Dibaca"]];
+  const externals = [["No", "Tgl Kirim", "Pengirim"]];
   const internals = [["No", "Tgl Kirim", "Penerima", "Dibaca"]];
 
   reportExpeditions.forEach((element, index) => {
-    if (!separate || element.type == 1)
-      externals.push([index + 1, element.date, element.name, element.read]);
+    if (element.type == 1)
+      externals.push([index + 1, element.date, element.name]);
 
     if (!separate || element.type == 2)
       internals.push([index + 1, element.date, element.name, element.read]);

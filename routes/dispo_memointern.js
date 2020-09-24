@@ -33,7 +33,7 @@ function getDocDefinition(report) {
   const [considerations, dispositions] = filterDispositions(report.dispositions);
 
   // ekspedisi list
-  const [externals, internals] = filterExpeditions(report.expeditions, false);
+  const [, internals] = filterExpeditions(report.expeditions, false);
 
   // report details
   const layoutDetails = {
@@ -95,10 +95,10 @@ function getDocDefinition(report) {
     pageBreak: "after",
   };
 
-  const layoutExpeditions = {
+  const layoutInternals = {
     table: {
       widths: ["auto", "auto", "*", "auto"],
-      body: externals || internals
+      body: internals
     },
     margin: [0, 5, 0, 15],
     layout: {
@@ -155,7 +155,7 @@ function getDocDefinition(report) {
       {
         text: "Hasil Disposisi",
         style: {
-          fontSize: 13,
+          fontSize: 12,
           bold: true,
           decoration: "underline",
         }
@@ -192,14 +192,14 @@ function getDocDefinition(report) {
         },
       },
       {
-        text: "Hasil Pengiriman",
+        text: "Ekspedisi Intern",
         style: {
-          fontSize: 13,
+          fontSize: 12,
           bold: true,
           decoration: "underline",
-        }
+        },
       },
-      layoutExpeditions,
+      layoutInternals,
     ],
 
     styles: {
@@ -254,12 +254,12 @@ function filterDispositions(reportDispositions) {
  * @param {*} separate 
  */
 function filterExpeditions(reportExpeditions, separate) {
-  const externals = [["No", "Tgl Kirim", "Penerima", "Dibaca"]];
+  const externals = [["No", "Tgl Kirim", "Pengirim"]];
   const internals = [["No", "Tgl Kirim", "Penerima", "Dibaca"]];
 
   reportExpeditions.forEach((element, index) => {
-    if (!separate || element.type == 1)
-      externals.push([index + 1, element.date, element.name, element.read]);
+    if (element.type == 1)
+      externals.push([index + 1, element.date, element.name]);
 
     if (!separate || element.type == 2)
       internals.push([index + 1, element.date, element.name, element.read]);
