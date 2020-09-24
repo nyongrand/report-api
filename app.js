@@ -21,6 +21,6 @@ app.use("/dispo/memointern", dispoMemoInternRouter);
 app.use("/dispo/suratumum", dispoSuratUmumRouter);
 app.use("/dispo/suratkhusus", dispoSuratKhususRouter);
 app.use("/dispo/protap", dispoProtapRouter);
-app.use("/dispo/dispo_dokumenpenting", dispoDokumenPentingRouter);
+app.use("/dispo/dokumenpenting", dispoDokumenPentingRouter);
 
 app.listen(3000);
