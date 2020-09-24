@@ -37,7 +37,7 @@ function getDocDefinition(report) {
     table: {
       widths: [90, "auto", "*"],
       body: [
-        ["Nomor Dokumen", ":", report.refNumber],
+        ["No Dokumen", ":", report.refNumber],
         ["Tanggal Kirim", ":", report.sent],
         ["Penyusun", ":", report.sender],
         ["Judul", ":", report.subject],
