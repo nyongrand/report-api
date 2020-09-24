@@ -30,7 +30,7 @@ function getDocDefinition(report) {
   const contact = "Jl. Jaksa Agung Suprapto No. 76 RT 03 RW 03 Lamongan, Telp. 0322-322834 (Hunting) Fax. 0322-314048";
 
   // ekspedisi list
-  const [externals, internals] = filterExpeditions(report.expeditions, false);
+  const [externals, internals] = filterExpeditions(report.expeditions, true);
 
   // report details
   const layoutDetails = {
@@ -61,7 +61,7 @@ function getDocDefinition(report) {
     },
     margin: [0, 5, 0, 15],
     layout: {
-      hLineWidth: (i) => i > 1 ? 1 : 0,
+      hLineWidth: () => 0,
       vLineWidth: () => 0,
       hLineColor: function () {
         return "#AAAAAA";
@@ -80,7 +80,7 @@ function getDocDefinition(report) {
     },
     margin: [0, 5, 0, 15],
     layout: {
-      hLineWidth: (i) => i > 1 ? 1 : 0,
+      hLineWidth: () => 0,
       vLineWidth: () => 0,
       hLineColor: () => "#AAAAAA",
 
@@ -105,10 +105,9 @@ function getDocDefinition(report) {
       { text: instansi, style: "subheader" },
       { text: contact, style: "contact" },
 
-      { text: `ID: ${report.id}` },
       layoutDetails,
       {
-        text: "Hasil Disposisi",
+        text: "Ekspedisi Ekstern",
         style: {
           fontSize: 13,
           bold: true,
@@ -117,7 +116,7 @@ function getDocDefinition(report) {
       },
       layoutExternals,
       {
-        text: "Hasil Disposisi",
+        text: "Ekspedisi Intern",
         style: {
           fontSize: 13,
           bold: true,
