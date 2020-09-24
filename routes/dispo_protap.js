@@ -37,9 +37,9 @@ function getDocDefinition(report) {
     table: {
       widths: [90, "auto", "*"],
       body: [
+        ["No Agenda", ":", report.agenda],
         ["Revisi Ke", ":", report.refNumber],
-        ["Revisi Ke", ":", report.refNumber],
-        ["Tanggal", ":", report.sent],
+        ["Tanggal Terbit", ":", report.sent],
         ["Penyusun", ":", report.sender],
         ["Judul", ":", report.subject],
       ]
