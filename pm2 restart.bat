@@ -1,1 +1,1 @@
-pm2 restart app.js
+git pull; pm2 restart app.js

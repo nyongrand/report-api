@@ -30,7 +30,7 @@ function getDocDefinition(report) {
   const contact = "Jl. Jaksa Agung Suprapto No. 76 RT 03 RW 03 Lamongan, Telp. 0322-322834 (Hunting) Fax. 0322-314048";
 
   // ekspedisi list
-  const [externals, internals] = filterExpeditions(report.expeditions, true);
+  const [, internals] = filterExpeditions(report.expeditions, false);
 
   // report details
   const layoutDetails = {
@@ -38,9 +38,9 @@ function getDocDefinition(report) {
       widths: [90, "auto", "*"],
       body: [
         ["Revisi Ke", ":", report.refNumber],
+        ["Revisi Ke", ":", report.refNumber],
         ["Tanggal", ":", report.sent],
-        ["Penyusun", ":", report.function],
-        ["Penyusun", ":", report.address],
+        ["Penyusun", ":", report.sender],
         ["Judul", ":", report.subject],
       ]
     },
@@ -51,25 +51,6 @@ function getDocDefinition(report) {
       },
       vLineWidth: () => 0,
     }
-  };
-
-  // eksternal expeditions list
-  const layoutExternals = {
-    table: {
-      widths: ["auto", "auto", "*"],
-      body: externals
-    },
-    margin: [0, 5, 0, 15],
-    layout: {
-      hLineWidth: () => 0,
-      vLineWidth: () => 0,
-      hLineColor: () => "#AAAAAA",
-      fillColor: function (row) {
-        return (row === 0) ? "#CCCCCC" : null;
-      },
-      paddingTop: () => 5,
-      paddingBottom: () => 2,
-    },
   };
 
   // eksternal expeditions list
@@ -105,15 +86,6 @@ function getDocDefinition(report) {
       { text: contact, style: "contact" },
 
       layoutDetails,
-      {
-        text: "Ekspedisi Ekstern",
-        style: {
-          fontSize: 12,
-          bold: true,
-          decoration: "underline",
-        }
-      },
-      layoutExternals,
       {
         text: "Ekspedisi Intern",
         style: {
