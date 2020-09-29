@@ -37,7 +37,7 @@ function getDocDefinition(report) {
   const followups = filterFollowups(report.followups);
 
   // ekspedisi list
-  const [, internals] = filterExpeditions(report.expeditions, false);
+  const expeditions = filterExpeditions(report.expeditions);
 
   // report details
   const layoutDetails = {
@@ -78,7 +78,7 @@ function getDocDefinition(report) {
     },
   };
 
-  // expedition list
+  // follow up list
   const layoutFollowups = {
     table: {
       widths: ["auto", "auto", "*", "auto"],
@@ -101,7 +101,7 @@ function getDocDefinition(report) {
   const layoutInternals = {
     table: {
       widths: ["auto", "auto", "*", "auto"],
-      body: internals,
+      body: expeditions,
     },
     margin: [0, 5, 0, 15],
     layout: {
@@ -125,7 +125,7 @@ function getDocDefinition(report) {
     },
 
     content: [
-      { text: `LEMBAR PENGIRIMAN ${report.title}`, style: "header" },
+      { text: `LEMBAR ${report.title}`, style: "header" },
       { text: instansi, style: "subheader" },
       { text: contact, style: "contact" },
 
@@ -163,7 +163,7 @@ function getDocDefinition(report) {
       layoutDetails,
 
       {
-        text: "Hasil Disposisi",
+        text: "Disposisi",
         style: {
           fontSize: 12,
           bold: true,
@@ -173,7 +173,7 @@ function getDocDefinition(report) {
       layoutDispositions,
 
       {
-        text: "Hasil Disposisi",
+        text: "Tindak Lanjut",
         style: {
           fontSize: 12,
           bold: true,
@@ -183,7 +183,7 @@ function getDocDefinition(report) {
       layoutFollowups,
 
       {
-        text: "Ekspedisi Intern",
+        text: "Ekspedisi",
         style: {
           fontSize: 12,
           bold: true,
@@ -214,67 +214,31 @@ function getDocDefinition(report) {
   };
 }
 
-/**
- * Separate considerations & dispositions
- * @param {*} reportDispositions
- */
-function filterDispositions(reportDispositions) {
-  const considerations = [["Jabatan", "Usul / Pertimbangan", "Tanggal"]];
-  const dispositions = [["Diteruskan Ke", "Isi Disposisi", "Tanggal"]];
-
-  reportDispositions.forEach((element) => {
-    if (element.level != 1) {
-      considerations.push([element.name, element.note, element.date]);
-    } else {
-      dispositions.push([element.name, element.note, element.date]);
-    }
+function filterDispositions(items) {
+  const row = [["Diteruskan Ke", "Isi Disposisi", "Tanggal"]];
+  items.forEach((element) => {
+    row.push([element.name, element.note, element.date]);
   });
 
-  return [considerations, dispositions];
+  return row;
 }
 
-/**
- * Separate considerations & dispositions
- * @param {*} reportDispositions
- */
-function filterFollowups(reportFollowup) {
-  const followups = [["No", "Tgl Kirim", "Penerima", "Dibaca"]];
-
-  reportFollowup.forEach((element) => {
-    followups.push([
-      followups.length,
-      element.date,
-      element.name,
-      element.read,
-    ]);
+function filterFollowups(items) {
+  const row = [["No", "Tgl Kirim", "Penerima", "Dibaca"]];
+  items.forEach((element) => {
+    row.push([row.length, element.date, element.name, element.read]);
   });
 
-  return followups;
+  return row;
 }
 
-/**
- * Separate expeditions, return equal list if separate = false
- * @param {*} reportExpeditions
- * @param {*} separate
- */
-function filterExpeditions(reportExpeditions, separate) {
-  const externals = [["No", "Tgl Kirim", "Pengirim"]];
-  const internals = [["No", "Tgl Kirim", "Penerima", "Dibaca"]];
-
-  reportExpeditions.forEach((element) => {
-    if (element.type == 1)
-      externals.push([externals.length, element.date, element.name]);
-
-    if (!separate || element.type == 2)
-      internals.push([
-        internals.length,
-        element.date,
-        element.name,
-        element.read,
-      ]);
+function filterExpeditions(items) {
+  const row = [["No", "Tgl Kirim", "Penerima", "Dibaca"]];
+  items.forEach((element) => {
+    expeditions.push([row.length, element.date, element.name, element.read]);
   });
 
-  return [externals, internals];
+  return row;
 }
 
 module.exports = router;
