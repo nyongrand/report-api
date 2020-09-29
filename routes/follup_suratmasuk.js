@@ -139,7 +139,7 @@ function getDocDefinition(report) {
 
     content: [
       { text: `${report.title}`, style: "header" },
-      { text: instansi, style: "subheader" },
+      { text: instansi, style: "header" },
       { text: `${address}, ${phone}`, style: "contact" },
 
       { text: `ID: ${report.id}` },
@@ -172,36 +172,16 @@ function getDocDefinition(report) {
           paddingBottom: () => 0,
         },
       },
+
       layoutDetails,
 
-      {
-        text: "Disposisi",
-        style: {
-          fontSize: 12,
-          bold: true,
-          decoration: "underline",
-        },
-      },
+      { text: "Disposisi", style: "subheader" },
       layoutDispositions,
 
-      {
-        text: "Tindak Lanjut",
-        style: {
-          fontSize: 12,
-          bold: true,
-          decoration: "underline",
-        },
-      },
+      { text: "Tindak Lanjut", style: "subheader" },
       layoutFollowups,
 
-      {
-        text: "Ekspedisi",
-        style: {
-          fontSize: 12,
-          bold: true,
-          decoration: "underline",
-        },
-      },
+      { text: "Ekspedisi", style: "subheader" },
       layoutInternals,
     ],
 
@@ -212,9 +192,9 @@ function getDocDefinition(report) {
         bold: true,
       },
       subheader: {
-        alignment: "center",
         fontSize: 14,
         bold: true,
+        decoration: "underline",
       },
       contact: {
         alignment: "center",
