@@ -235,7 +235,7 @@ function filterFollowups(items) {
 function filterExpeditions(items) {
   const row = [["No", "Tgl Kirim", "Penerima", "Dibaca"]];
   items.forEach((element) => {
-    expeditions.push([row.length, element.date, element.name, element.read]);
+    row.push([row.length, element.date, element.name, element.read]);
   });
 
   return row;
