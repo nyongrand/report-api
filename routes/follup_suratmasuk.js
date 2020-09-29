@@ -54,7 +54,7 @@ function getDocDefinition(report) {
         ["", ""],
       ],
     },
-    margin: [0, 5, 0, 20],
+    margin: [0, 10, 0, 10],
     layout: {
       hLineWidth: function (i, node) {
         if (i === 0 || i === node.table.body.length) return 1;
@@ -165,7 +165,7 @@ function getDocDefinition(report) {
             ],
           ],
         },
-        margin: [0, 2, 0, 15],
+        margin: [0, 2, 0, 10],
         layout: {
           hLineWidth: (i) => (i + 1) % 2,
           vLineWidth: (i) => (i + 1) % 2,
