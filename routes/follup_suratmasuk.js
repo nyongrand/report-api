@@ -44,10 +44,14 @@ function getDocDefinition(report) {
     table: {
       widths: [90, "*"],
       body: [
+        ["", ""],
+        ["", ""],
         ["Nomor Surat", `: ${report.refNumber}`],
         ["Tanggal Surat", `: ${report.sent}`],
         ["Pengirim", `: ${report.sender}`],
         ["Isi Surat", `: ${report.subject}`],
+        ["", ""],
+        ["", ""],
       ],
     },
     margin: [0, 5, 0, 20],
