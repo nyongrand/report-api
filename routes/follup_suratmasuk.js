@@ -79,6 +79,7 @@ function getDocDefinition(report) {
       widths: [100, "*", 75],
       body: dispositions,
     },
+    margin: [0, 5, 0, 15],
     layout: {
       fillColor: (row) => (row === 0 ? "#CCCCCC" : null),
       hLineWidth: (i) => (i > 1 ? 1 : 0),
@@ -96,6 +97,7 @@ function getDocDefinition(report) {
       widths: ["auto", "auto", "*", "auto"],
       body: followups,
     },
+    margin: [0, 5, 0, 15],
     layout: {
       hLineWidth: () => 0,
       vLineWidth: () => 0,
@@ -114,6 +116,7 @@ function getDocDefinition(report) {
       widths: ["auto", "auto", "*", "auto"],
       body: expeditions,
     },
+    margin: [0, 5, 0, 15],
     layout: {
       hLineWidth: () => 0,
       vLineWidth: () => 0,
@@ -173,7 +176,6 @@ function getDocDefinition(report) {
 
       {
         text: "Disposisi",
-        margin: [0, 20, 0, 0],
         style: {
           fontSize: 12,
           bold: true,
@@ -184,7 +186,6 @@ function getDocDefinition(report) {
 
       {
         text: "Tindak Lanjut",
-        margin: [0, 20, 0, 0],
         style: {
           fontSize: 12,
           bold: true,
@@ -195,7 +196,6 @@ function getDocDefinition(report) {
 
       {
         text: "Ekspedisi",
-        margin: [0, 20, 0, 0],
         style: {
           fontSize: 12,
           bold: true,
