@@ -165,7 +165,6 @@ function getDocDefinition(report) {
             ],
           ],
         },
-        margin: [0, 2, 0, 10],
         layout: {
           hLineWidth: (i) => (i + 1) % 2,
           vLineWidth: (i) => (i + 1) % 2,
