@@ -42,18 +42,28 @@ function getDocDefinition(report) {
   // report details
   const layoutDetails = {
     table: {
-      widths: [90, "auto", "*"],
+      widths: [90, "*"],
       body: [
-        ["Nomor Surat", ":", report.refNumber],
-        ["Tanggal Surat", ":", report.sent],
-        ["Pengirim", ":", report.sender],
-        ["Isi Surat", ":", report.subject],
+        ["Nomor Surat", `: ${report.refNumber}`],
+        ["Tanggal Surat", `: ${report.sent}`],
+        ["Pengirim", `: ${report.sender}`],
+        ["Isi Surat", `: ${report.subject}`],
       ],
     },
     margin: [0, 5, 0, 20],
     layout: {
       hLineWidth: function (i, node) {
-        return i === node.table.body.length ? 1 : 0;
+        if (i === 0 || i === node.table.body.length) return 1;
+        if (i === 1 || i === node.table.body.length - 1) return 2;
+        return 0;
+      },
+      paddingBottom: function (i, node) {
+        if (i === 1 || i === node.table.body.length - 2) return 3;
+        return 1;
+      },
+      paddingTop: function (i, node) {
+        if (i === 1 || i === node.table.body.length - 2) return 3;
+        return 1;
       },
       vLineWidth: () => 0,
     },
