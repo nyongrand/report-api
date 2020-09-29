@@ -192,7 +192,7 @@ function getDocDefinition(report) {
         bold: true,
       },
       subheader: {
-        fontSize: 14,
+        fontSize: 12,
         bold: true,
         decoration: "underline",
       },
