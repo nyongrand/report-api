@@ -42,16 +42,16 @@ function getDocDefinition(report) {
   // report details
   const layoutDetails = {
     table: {
-      widths: [90, "*"],
+      widths: [90, "auto", "*"],
       body: [
-        ["", ""],
-        ["", ""],
-        ["Nomor Surat", `: ${report.refNumber}`],
-        ["Tanggal Surat", `: ${report.sent}`],
-        ["Pengirim", `: ${report.sender}`],
-        ["Isi Surat", `: ${report.subject}`],
-        ["", ""],
-        ["", ""],
+        ["", "", ""],
+        ["", "", ""],
+        ["Nomor Surat", ":", report.refNumber],
+        ["Tanggal Surat", ":", report.sent],
+        ["Pengirim", ":", report.sender],
+        ["Isi Surat", ":", report.subject],
+        ["", "", ""],
+        ["", "", ""],
       ],
     },
     margin: [0, 10, 0, 10],
@@ -79,7 +79,6 @@ function getDocDefinition(report) {
       widths: [100, "*", 75],
       body: dispositions,
     },
-    margin: [0, 5, 0, 15],
     layout: {
       fillColor: (row) => (row === 0 ? "#CCCCCC" : null),
       hLineWidth: (i) => (i > 1 ? 1 : 0),
@@ -97,7 +96,6 @@ function getDocDefinition(report) {
       widths: ["auto", "auto", "*", "auto"],
       body: followups,
     },
-    margin: [0, 5, 0, 15],
     layout: {
       hLineWidth: () => 0,
       vLineWidth: () => 0,
@@ -116,7 +114,6 @@ function getDocDefinition(report) {
       widths: ["auto", "auto", "*", "auto"],
       body: expeditions,
     },
-    margin: [0, 5, 0, 15],
     layout: {
       hLineWidth: () => 0,
       vLineWidth: () => 0,
@@ -176,6 +173,7 @@ function getDocDefinition(report) {
 
       {
         text: "Disposisi",
+        margin: [0, 20, 0, 0],
         style: {
           fontSize: 12,
           bold: true,
@@ -186,6 +184,7 @@ function getDocDefinition(report) {
 
       {
         text: "Tindak Lanjut",
+        margin: [0, 20, 0, 0],
         style: {
           fontSize: 12,
           bold: true,
@@ -196,6 +195,7 @@ function getDocDefinition(report) {
 
       {
         text: "Ekspedisi",
+        margin: [0, 20, 0, 0],
         style: {
           fontSize: 12,
           bold: true,
