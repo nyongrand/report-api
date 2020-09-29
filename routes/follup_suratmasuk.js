@@ -67,18 +67,11 @@ function getDocDefinition(report) {
     },
     margin: [0, 5, 0, 15],
     layout: {
+      fillColor: (row) => (row === 0 ? "#CCCCCC" : null),
       hLineWidth: (i) => (i > 1 ? 1 : 0),
       vLineWidth: () => 0,
       hLineColor: () => "#AAAAAA",
-      hLineStyle: function (i, node) {
-        if (i === 0 || i === node.table.widths.length) {
-          return null;
-        }
-        return { dash: { length: 1 } };
-      },
-      fillColor: function (row) {
-        return row === 0 ? "#CCCCCC" : null;
-      },
+      hLineStyle: () => ({ dash: { length: 2 } }),
       paddingTop: () => 5,
       paddingBottom: () => 2,
     },
