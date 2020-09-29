@@ -4,6 +4,9 @@ const express = require("express");
 var dispoSuratMasukRouter = require("./routes/dispo_suratmasuk");
 var dispoMemoInternRouter = require("./routes/dispo_memointern");
 
+var follupSuratMasukRouter = require("./routes/follup_suratmasuk");
+var follupMemoInternRouter = require("./routes/follup_memointern");
+
 var dispoSuratUmumRouter = require("./routes/dispo_suratumum");
 var dispoSuratKhususRouter = require("./routes/dispo_suratkhusus");
 var dispoProtapRouter = require("./routes/dispo_protap");
@@ -17,6 +20,9 @@ app.use(express.urlencoded({ extended: false }));
 // router descriptions
 app.use("/dispo/suratmasuk", dispoSuratMasukRouter);
 app.use("/dispo/memointern", dispoMemoInternRouter);
+
+app.use("/follup/suratmasuk", follupSuratMasukRouter);
+app.use("/follup/memointern", follupMemoInternRouter);
 
 app.use("/dispo/suratumum", dispoSuratUmumRouter);
 app.use("/dispo/suratkhusus", dispoSuratKhususRouter);

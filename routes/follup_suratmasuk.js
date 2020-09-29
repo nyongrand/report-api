@@ -31,9 +31,10 @@ function getDocDefinition(report) {
     "Jl. Jaksa Agung Suprapto No. 76 RT 03 RW 03 Lamongan, Telp. 0322-322834 (Hunting) Fax. 0322-314048";
 
   // considerations & disposisi list
-  const [considerations, dispositions] = filterDispositions(
-    report.dispositions
-  );
+  const dispositions = filterDispositions(report.dispositions);
+
+  // follow ups
+  const followups = filterFollowups(report.followups);
 
   // ekspedisi list
   const [, internals] = filterExpeditions(report.expeditions, false);
@@ -58,25 +59,6 @@ function getDocDefinition(report) {
     },
   };
 
-  // consideration list
-  const layoutConsiderations = {
-    table: {
-      widths: [100, "*", 75],
-      body: considerations,
-    },
-    margin: [0, 5, 0, 15],
-    layout: {
-      hLineWidth: (i) => (i > 1 ? 1 : 0),
-      vLineWidth: () => 0,
-      hLineColor: () => "#AAAAAA",
-      fillColor: function (row) {
-        return row === 0 ? "#CCCCCC" : null;
-      },
-      paddingTop: () => 5,
-      paddingBottom: () => 2,
-    },
-  };
-
   // disposition list
   const layoutDispositions = {
     table: {
@@ -94,7 +76,25 @@ function getDocDefinition(report) {
       paddingTop: () => 5,
       paddingBottom: () => 2,
     },
-    pageBreak: "after",
+  };
+
+  // expedition list
+  const layoutFollowups = {
+    table: {
+      widths: ["auto", "auto", "*", "auto"],
+      body: followups,
+    },
+    margin: [0, 5, 0, 15],
+    layout: {
+      hLineWidth: () => 0,
+      vLineWidth: () => 0,
+      hLineColor: () => "#AAAAAA",
+      fillColor: function (row) {
+        return row === 0 ? "#CCCCCC" : null;
+      },
+      paddingTop: () => 5,
+      paddingBottom: () => 2,
+    },
   };
 
   // expedition list
@@ -161,6 +161,7 @@ function getDocDefinition(report) {
         },
       },
       layoutDetails,
+
       {
         text: "Hasil Disposisi",
         style: {
@@ -169,43 +170,18 @@ function getDocDefinition(report) {
           decoration: "underline",
         },
       },
-      layoutConsiderations,
       layoutDispositions,
 
-      { text: report.title, style: "header" },
-      { text: instansi, style: "subheader" },
-      { text: contact, style: "contact" },
-
       {
-        table: {
-          widths: ["auto", "auto", "auto", "auto", "auto", "*"],
-          body: [
-            [
-              "Tgl Terima",
-              `: ${report.received}`,
-              "Target Selesai",
-              `: ${report.deadline}`,
-              "Arsip",
-              `: ${report.archive}`,
-            ],
-            [
-              "No Agenda",
-              `: ${report.agenda}`,
-              "Nama File",
-              `: ${report.filename}`,
-              "Kode",
-              `: ${report.archiveCode}`,
-            ],
-          ],
-        },
-        margin: [0, 2, 0, 15],
-        layout: {
-          hLineWidth: (i) => (i + 1) % 2,
-          vLineWidth: (i) => (i + 1) % 2,
-          paddingTop: () => 3,
-          paddingBottom: () => 0,
+        text: "Hasil Disposisi",
+        style: {
+          fontSize: 12,
+          bold: true,
+          decoration: "underline",
         },
       },
+      layoutFollowups,
+
       {
         text: "Ekspedisi Intern",
         style: {
@@ -255,6 +231,25 @@ function filterDispositions(reportDispositions) {
   });
 
   return [considerations, dispositions];
+}
+
+/**
+ * Separate considerations & dispositions
+ * @param {*} reportDispositions
+ */
+function filterFollowups(reportFollowup) {
+  const followups = [["No", "Tgl Kirim", "Penerima", "Dibaca"]];
+
+  reportFollowup.forEach((element) => {
+    followups.push([
+      followups.length,
+      element.date,
+      element.name,
+      element.read,
+    ]);
+  });
+
+  return followups;
 }
 
 /**

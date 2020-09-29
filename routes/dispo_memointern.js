@@ -9,7 +9,7 @@ router.post("/", function (req, res) {
       normal: "Helvetica",
       bold: "Helvetica-Bold",
       italics: "Helvetica-Oblique",
-      bolditalics: "Helvetica-BoldOblique"
+      bolditalics: "Helvetica-BoldOblique",
     },
   };
 
@@ -23,14 +23,17 @@ router.post("/", function (req, res) {
 
 /**
  * Create document definition from report object
- * @param {any} report 
+ * @param {any} report
  */
 function getDocDefinition(report) {
   const instansi = "RUMAH SAKIT MUHAMMADIYAH LAMONGAN";
-  const contact = "Jl. Jaksa Agung Suprapto No. 76 RT 03 RW 03 Lamongan, Telp. 0322-322834 (Hunting) Fax. 0322-314048";
+  const contact =
+    "Jl. Jaksa Agung Suprapto No. 76 RT 03 RW 03 Lamongan, Telp. 0322-322834 (Hunting) Fax. 0322-314048";
 
   // considerations & disposisi list
-  const [considerations, dispositions] = filterDispositions(report.dispositions);
+  const [considerations, dispositions] = filterDispositions(
+    report.dispositions
+  );
 
   // ekspedisi list
   const [, internals] = filterExpeditions(report.expeditions, false);
@@ -45,30 +48,30 @@ function getDocDefinition(report) {
         ["Pengirim", ":", report.sender],
         ["Jabatan", ":", report.function],
         ["Perihal", ":", report.subject],
-      ]
+      ],
     },
     margin: [0, 5, 0, 20],
     layout: {
       hLineWidth: function (i, node) {
-        return (i === node.table.body.length) ? 1 : 0;
+        return i === node.table.body.length ? 1 : 0;
       },
       vLineWidth: () => 0,
-    }
+    },
   };
 
   // consideration list
   const layoutConsiderations = {
     table: {
       widths: [100, "*", 75],
-      body: considerations
+      body: considerations,
     },
     margin: [0, 5, 0, 15],
     layout: {
-      hLineWidth: (i) => i > 1 ? 1 : 0,
+      hLineWidth: (i) => (i > 1 ? 1 : 0),
       vLineWidth: () => 0,
       hLineColor: () => "#AAAAAA",
       fillColor: function (row) {
-        return (row === 0) ? "#CCCCCC" : null;
+        return row === 0 ? "#CCCCCC" : null;
       },
       paddingTop: () => 5,
       paddingBottom: () => 2,
@@ -79,15 +82,15 @@ function getDocDefinition(report) {
   const layoutDispositions = {
     table: {
       widths: [100, "*", 75],
-      body: dispositions
+      body: dispositions,
     },
     margin: [0, 5, 0, 15],
     layout: {
-      hLineWidth: (i) => i > 1 ? 1 : 0,
+      hLineWidth: (i) => (i > 1 ? 1 : 0),
       vLineWidth: () => 0,
       hLineColor: () => "#AAAAAA",
       fillColor: function (row) {
-        return (row === 0) ? "#CCCCCC" : null;
+        return row === 0 ? "#CCCCCC" : null;
       },
       paddingTop: () => 5,
       paddingBottom: () => 2,
@@ -98,7 +101,7 @@ function getDocDefinition(report) {
   const layoutInternals = {
     table: {
       widths: ["auto", "auto", "*", "auto"],
-      body: internals
+      body: internals,
     },
     margin: [0, 5, 0, 15],
     layout: {
@@ -106,7 +109,7 @@ function getDocDefinition(report) {
       vLineWidth: () => 0,
       hLineColor: () => "#AAAAAA",
       fillColor: function (row) {
-        return (row === 0) ? "#CCCCCC" : null;
+        return row === 0 ? "#CCCCCC" : null;
       },
       paddingTop: () => 5,
       paddingBottom: () => 2,
@@ -132,16 +135,22 @@ function getDocDefinition(report) {
           widths: ["auto", "auto", "auto", "auto", "auto", "*"],
           body: [
             [
-              "Tgl Terima", `: ${report.received}`,
-              "Target Selesai", `: ${report.deadline}`,
-              "Arsip", `: ${report.archive}`
+              "Tgl Terima",
+              `: ${report.received}`,
+              "Target Selesai",
+              `: ${report.deadline}`,
+              "Arsip",
+              `: ${report.archive}`,
             ],
             [
-              "No Agenda", `: ${report.agenda}`,
-              "Nama File", `: ${report.filename}`,
-              "Kode", `: ${report.archiveCode}`
+              "No Agenda",
+              `: ${report.agenda}`,
+              "Nama File",
+              `: ${report.filename}`,
+              "Kode",
+              `: ${report.archiveCode}`,
             ],
-          ]
+          ],
         },
         margin: [0, 2, 0, 15],
         layout: {
@@ -149,7 +158,7 @@ function getDocDefinition(report) {
           vLineWidth: (i) => (i + 1) % 2,
           paddingTop: () => 3,
           paddingBottom: () => 0,
-        }
+        },
       },
       layoutDetails,
       {
@@ -158,7 +167,7 @@ function getDocDefinition(report) {
           fontSize: 12,
           bold: true,
           decoration: "underline",
-        }
+        },
       },
       layoutConsiderations,
       layoutDispositions,
@@ -172,16 +181,22 @@ function getDocDefinition(report) {
           widths: ["auto", "auto", "auto", "auto", "auto", "*"],
           body: [
             [
-              "Tgl Terima", `: ${report.received}`,
-              "Target Selesai", `: ${report.deadline}`,
-              "Arsip", `: ${report.archive}`
+              "Tgl Terima",
+              `: ${report.received}`,
+              "Target Selesai",
+              `: ${report.deadline}`,
+              "Arsip",
+              `: ${report.archive}`,
             ],
             [
-              "No Agenda", `: ${report.agenda}`,
-              "Nama File", `: ${report.filename}`,
-              "Kode", `: ${report.archiveCode}`
+              "No Agenda",
+              `: ${report.agenda}`,
+              "Nama File",
+              `: ${report.filename}`,
+              "Kode",
+              `: ${report.archiveCode}`,
             ],
-          ]
+          ],
         },
         margin: [0, 2, 0, 15],
         layout: {
@@ -225,21 +240,17 @@ function getDocDefinition(report) {
 
 /**
  * Separate considerations & dispositions
- * @param {*} reportDispositions 
+ * @param {*} reportDispositions
  */
 function filterDispositions(reportDispositions) {
   const considerations = [["Jabatan", "Usul / Pertimbangan", "Tanggal"]];
   const dispositions = [["Diteruskan Ke", "Isi Disposisi", "Tanggal"]];
 
-  reportDispositions.forEach(element => {
+  reportDispositions.forEach((element) => {
     if (element.level != 1) {
-      considerations.push(
-        [element.name, element.note, element.date]
-      );
+      considerations.push([element.name, element.note, element.date]);
     } else {
-      dispositions.push(
-        [element.name, element.note, element.date]
-      );
+      dispositions.push([element.name, element.note, element.date]);
     }
   });
 
@@ -248,19 +259,24 @@ function filterDispositions(reportDispositions) {
 
 /**
  * Separate expeditions, return equal list if separate = false
- * @param {*} reportExpeditions 
- * @param {*} separate 
+ * @param {*} reportExpeditions
+ * @param {*} separate
  */
 function filterExpeditions(reportExpeditions, separate) {
   const externals = [["No", "Tgl Kirim", "Pengirim"]];
   const internals = [["No", "Tgl Kirim", "Penerima", "Dibaca"]];
 
-  reportExpeditions.forEach(element => {
+  reportExpeditions.forEach((element) => {
     if (element.type == 1)
       externals.push([externals.length, element.date, element.name]);
 
     if (!separate || element.type == 2)
-      internals.push([internals.length, element.date, element.name, element.read]);
+      internals.push([
+        internals.length,
+        element.date,
+        element.name,
+        element.read,
+      ]);
   });
 
   return [externals, internals];
