@@ -94,6 +94,7 @@ function getDocDefinition(report) {
     pageBreak: "after",
   };
 
+  // expedition list
   const layoutInternals = {
     table: {
       widths: ["auto", "auto", "*", "auto"],
@@ -233,11 +234,11 @@ function filterDispositions(reportDispositions) {
   reportDispositions.forEach(element => {
     if (element.level != 1) {
       considerations.push(
-        [element.from, element.note, element.date]
+        [element.name, element.note, element.date]
       );
     } else {
       dispositions.push(
-        [element.from, element.note, element.date]
+        [element.name, element.note, element.date]
       );
     }
   });
