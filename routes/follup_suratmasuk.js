@@ -27,8 +27,8 @@ router.post("/", function (req, res) {
  */
 function getDocDefinition(report) {
   const instansi = "RUMAH SAKIT MUHAMMADIYAH LAMONGAN";
-  const contact =
-    "Jl. Jaksa Agung Suprapto No. 76 RT 03 RW 03 Lamongan, Telp. 0322-322834 (Hunting) Fax. 0322-314048";
+  const address = "Jl. Jaksa Agung Suprapto No. 76 RT 03 RW 03 Lamongan";
+  const phone = "Telp. 0322-322834 (Hunting) Fax. 0322-314048";
 
   // considerations & disposisi list
   const dispositions = filterDispositions(report.dispositions);
@@ -138,9 +138,9 @@ function getDocDefinition(report) {
     },
 
     content: [
-      { text: `LEMBAR ${report.title}`, style: "header" },
+      { text: `${report.title}`, style: "header" },
       { text: instansi, style: "subheader" },
-      { text: contact, style: "contact" },
+      { text: `${address}, ${phone}`, style: "contact" },
 
       { text: `ID: ${report.id}` },
       {
