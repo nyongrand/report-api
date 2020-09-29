@@ -70,6 +70,12 @@ function getDocDefinition(report) {
       hLineWidth: (i) => (i > 1 ? 1 : 0),
       vLineWidth: () => 0,
       hLineColor: () => "#AAAAAA",
+      hLineStyle: function (i, node) {
+        if (i === 0 || i === node.table.widths.length) {
+          return null;
+        }
+        return { dash: { length: 1 } };
+      },
       fillColor: function (row) {
         return row === 0 ? "#CCCCCC" : null;
       },
