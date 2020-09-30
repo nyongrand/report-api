@@ -1,3 +1,5 @@
+"use strict";
+var methods = require("../commons/methods.js");
 var express = require("express");
 var router = express.Router();
 
@@ -27,31 +29,39 @@ router.post("/", function (req, res) {
  */
 function getDocDefinition(report) {
   const instansi = "RUMAH SAKIT MUHAMMADIYAH LAMONGAN";
-  const contact =
-    "Jl. Jaksa Agung Suprapto No. 76 RT 03 RW 03 Lamongan, Telp. 0322-322834 (Hunting) Fax. 0322-314048";
+  const address = "Jl. Jaksa Agung Suprapto No. 76 RT 03 RW 03 Lamongan";
+  const phone = "Telp. 0322-322834 (Hunting) Fax. 0322-314048";
 
-  // ekspedisi list
-  const [externals, internals] = filterExpeditions(report.expeditions, true);
+  const externals = methods.expeditionsExtRow(report.expeditions);
+  const internals = methods.expeditionsIntRow(report.expeditions);
 
   // report details
   const layoutDetails = {
     table: {
       widths: [90, "auto", "*"],
       body: [
+        ["", "", ""],
+        ["", "", ""],
         ["Nomor Surat", ":", report.refNumber],
         ["Tanggal Surat", ":", report.sent],
         ["Tujuan", ":", report.recipient],
         ["Alamat", ":", report.address],
         ["Perihal", ":", report.subject],
+        ["", "", ""],
+        ["", "", ""],
       ],
     },
-    margin: [0, 5, 0, 20],
     layout: {
-      hLineWidth: function (i, node) {
-        return i === node.table.body.length ? 1 : 0;
+      hLineWidth: function (i) {
+        if (i % 8 === 0) return 1;
+        if (i % 6 === 1) return 2;
+        return 0;
       },
       vLineWidth: () => 0,
+      paddingTop: (i) => (i === 2 ? 5 : 1),
+      paddingBottom: (i) => (i === 6 ? 4 : 1),
     },
+    margin: [0, 5, 0, 20],
   };
 
   // eksternal expeditions list
@@ -101,28 +111,16 @@ function getDocDefinition(report) {
     },
 
     content: [
-      { text: `LEMBAR PENGIRIMAN ${report.title}`, style: "header" },
-      { text: instansi, style: "subheader" },
-      { text: contact, style: "contact" },
+      { text: `LEMBAR EKSPEDISI ${report.title}`, style: "header" },
+      { text: instansi, style: "header" },
+      { text: `${address}, ${phone}`, style: "contact" },
 
       layoutDetails,
-      {
-        text: "Ekspedisi Ekstern",
-        style: {
-          fontSize: 12,
-          bold: true,
-          decoration: "underline",
-        },
-      },
+
+      { text: "Ekspedisi Ekstern", style: "subheader" },
       layoutExternals,
-      {
-        text: "Ekspedisi Intern",
-        style: {
-          fontSize: 12,
-          bold: true,
-          decoration: "underline",
-        },
-      },
+
+      { text: "Ekspedisi Intern", style: "subheader" },
       layoutInternals,
     ],
 
@@ -133,9 +131,9 @@ function getDocDefinition(report) {
         bold: true,
       },
       subheader: {
-        alignment: "center",
-        fontSize: 14,
+        fontSize: 12,
         bold: true,
+        decoration: "underline",
       },
       contact: {
         alignment: "center",
@@ -145,31 +143,6 @@ function getDocDefinition(report) {
       },
     },
   };
-}
-
-/**
- * Separate expeditions, return equal list if separate = false
- * @param {*} reportExpeditions
- * @param {*} separate
- */
-function filterExpeditions(reportExpeditions, separate) {
-  const externals = [["No", "Tgl Kirim", "Pengirim"]];
-  const internals = [["No", "Tgl Kirim", "Penerima", "Dibaca"]];
-
-  reportExpeditions.forEach((element) => {
-    if (element.type == 1)
-      externals.push([externals.length, element.date, element.name]);
-
-    if (!separate || element.type == 2)
-      internals.push([
-        internals.length,
-        element.date,
-        element.name,
-        element.read,
-      ]);
-  });
-
-  return [externals, internals];
 }
 
 module.exports = router;
