@@ -1,3 +1,5 @@
+"use strict";
+var methods = require("../commons/methods.js");
 var express = require("express");
 var router = express.Router();
 
