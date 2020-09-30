@@ -30,13 +30,8 @@ function getDocDefinition(report) {
   const address = "Jl. Jaksa Agung Suprapto No. 76 RT 03 RW 03 Lamongan";
   const phone = "Telp. 0322-322834 (Hunting) Fax. 0322-314048";
 
-  // considerations & disposisi list
   const dispositions = dispositionsRow(report.dispositions);
-
-  // follow ups
   const followups = followupsRow(report.followups);
-
-  // ekspedisi list
   const expeditions = expeditionsRow(report.expeditions);
 
   // report details
@@ -55,7 +50,6 @@ function getDocDefinition(report) {
         ["", "", ""],
       ],
     },
-    margin: [0, 10, 0, 10],
     layout: {
       hLineWidth: function (i) {
         if (i % 8 === 0) return 1;
@@ -66,6 +60,7 @@ function getDocDefinition(report) {
       paddingTop: (i) => (i === 2 ? 5 : 1),
       paddingBottom: (i) => (i === 6 ? 4 : 1),
     },
+    margin: [0, 10, 0, 10],
   };
 
   // disposition list
