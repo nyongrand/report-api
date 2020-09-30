@@ -102,8 +102,8 @@ function getDocDefinition(report) {
       hLineWidth: (i) => (i % 4 == 0 ? 1 : 0),
       vLineWidth: () => 0,
       hLineColor: () => "#AAAAAA",
+      paddingTop: (i) => (i % 4 === 0 ? 4 : 0),
       paddingBottom: (i) => (i % 4 === 3 ? 2 : 0),
-      paddingTop: (i) => (i % 4 === 0 ? 2 : 0),
     },
     margin: [0, 5, 0, 15],
   };
@@ -218,7 +218,11 @@ function createFollowupsRows(items) {
   items.forEach((element, index) => {
     row.push([index + 1, { colSpan: 2, text: element.name, bold: true }, ""]);
     row.push(["", `Tgl. Kirim ${element.date}`, element.read]);
-    row.push(["", { colSpan: 2, text: "Isi Tindak Lanjut:" }, ""]);
+    row.push([
+      "",
+      { colSpan: 2, text: "Isi Tindak Lanjut:", margin: [0, 5, 0, 0] },
+      "",
+    ]);
     row.push(["", { colSpan: 2, text: element.note }, ""]);
   });
 
