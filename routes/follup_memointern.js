@@ -27,53 +27,50 @@ router.post("/", function (req, res) {
  */
 function getDocDefinition(report) {
   const instansi = "RUMAH SAKIT MUHAMMADIYAH LAMONGAN";
-  const contact =
-    "Jl. Jaksa Agung Suprapto No. 76 RT 03 RW 03 Lamongan, Telp. 0322-322834 (Hunting) Fax. 0322-314048";
+  const address = "Jl. Jaksa Agung Suprapto No. 76 RT 03 RW 03 Lamongan";
+  const phone = "Telp. 0322-322834 (Hunting) Fax. 0322-314048";
 
   // considerations & disposisi list
-  const [considerations, dispositions] = filterDispositions(
-    report.dispositions
-  );
+  const dispositions = filterDispositions(report.dispositions);
+
+  // follow ups
+  const followups = filterFollowups(report.followups);
 
   // ekspedisi list
-  const [, internals] = filterExpeditions(report.expeditions, false);
+  const expeditions = filterExpeditions(report.expeditions);
 
   // report details
   const layoutDetails = {
     table: {
       widths: [90, "auto", "*"],
       body: [
-        ["Nomor Surat", ":", report.refNumber],
-        ["Tanggal Surat", ":", report.sent],
+        ["", "", ""],
+        ["", "", ""],
+        ["Nomor Memo", ":", report.refNumber],
+        ["Tanggal Memo", ":", report.sent],
         ["Pengirim", ":", report.sender],
-        ["Isi Surat", ":", report.subject],
+        ["Jabatan", ":", report.function],
+        ["Perihal", ":", report.subject],
+        ["", "", ""],
+        ["", "", ""],
       ],
     },
-    margin: [0, 5, 0, 20],
+    margin: [0, 10, 0, 10],
     layout: {
       hLineWidth: function (i, node) {
-        return i === node.table.body.length ? 1 : 0;
+        if (i === 0 || i === node.table.body.length) return 1;
+        if (i === 1 || i === node.table.body.length - 1) return 2;
+        return 0;
+      },
+      paddingBottom: function (i, node) {
+        if (i === 1 || i === node.table.body.length - 2) return 3;
+        return 1;
+      },
+      paddingTop: function (i, node) {
+        if (i === 1 || i === node.table.body.length - 2) return 3;
+        return 1;
       },
       vLineWidth: () => 0,
-    },
-  };
-
-  // consideration list
-  const layoutConsiderations = {
-    table: {
-      widths: [100, "*", 75],
-      body: considerations,
-    },
-    margin: [0, 5, 0, 15],
-    layout: {
-      hLineWidth: (i) => (i > 1 ? 1 : 0),
-      vLineWidth: () => 0,
-      hLineColor: () => "#AAAAAA",
-      fillColor: function (row) {
-        return row === 0 ? "#CCCCCC" : null;
-      },
-      paddingTop: () => 5,
-      paddingBottom: () => 2,
     },
   };
 
@@ -85,7 +82,25 @@ function getDocDefinition(report) {
     },
     margin: [0, 5, 0, 15],
     layout: {
+      fillColor: (row) => (row === 0 ? "#CCCCCC" : null),
       hLineWidth: (i) => (i > 1 ? 1 : 0),
+      vLineWidth: () => 0,
+      hLineColor: () => "#AAAAAA",
+      hLineStyle: () => ({ dash: { length: 2 } }),
+      paddingTop: () => 5,
+      paddingBottom: () => 2,
+    },
+  };
+
+  // follow up list
+  const layoutFollowups = {
+    table: {
+      widths: ["auto", "auto", "*", "auto"],
+      body: followups,
+    },
+    margin: [0, 5, 0, 15],
+    layout: {
+      hLineWidth: () => 0,
       vLineWidth: () => 0,
       hLineColor: () => "#AAAAAA",
       fillColor: function (row) {
@@ -94,14 +109,13 @@ function getDocDefinition(report) {
       paddingTop: () => 5,
       paddingBottom: () => 2,
     },
-    pageBreak: "after",
   };
 
   // expedition list
   const layoutInternals = {
     table: {
       widths: ["auto", "auto", "*", "auto"],
-      body: internals,
+      body: expeditions,
     },
     margin: [0, 5, 0, 15],
     layout: {
@@ -125,9 +139,9 @@ function getDocDefinition(report) {
     },
 
     content: [
-      { text: `LEMBAR PENGIRIMAN ${report.title}`, style: "header" },
-      { text: instansi, style: "subheader" },
-      { text: contact, style: "contact" },
+      { text: `${report.title}`, style: "header" },
+      { text: instansi, style: "header" },
+      { text: `${address}, ${phone}`, style: "contact" },
 
       { text: `ID: ${report.id}` },
       {
@@ -152,7 +166,6 @@ function getDocDefinition(report) {
             ],
           ],
         },
-        margin: [0, 2, 0, 15],
         layout: {
           hLineWidth: (i) => (i + 1) % 2,
           vLineWidth: (i) => (i + 1) % 2,
@@ -160,60 +173,16 @@ function getDocDefinition(report) {
           paddingBottom: () => 0,
         },
       },
+
       layoutDetails,
-      {
-        text: "Hasil Disposisi",
-        style: {
-          fontSize: 12,
-          bold: true,
-          decoration: "underline",
-        },
-      },
-      layoutConsiderations,
+
+      { text: "Disposisi", style: "subheader" },
       layoutDispositions,
 
-      { text: report.title, style: "header" },
-      { text: instansi, style: "subheader" },
-      { text: contact, style: "contact" },
+      { text: "Tindak Lanjut", style: "subheader" },
+      layoutFollowups,
 
-      {
-        table: {
-          widths: ["auto", "auto", "auto", "auto", "auto", "*"],
-          body: [
-            [
-              "Tgl Terima",
-              `: ${report.received}`,
-              "Target Selesai",
-              `: ${report.deadline}`,
-              "Arsip",
-              `: ${report.archive}`,
-            ],
-            [
-              "No Agenda",
-              `: ${report.agenda}`,
-              "Nama File",
-              `: ${report.filename}`,
-              "Kode",
-              `: ${report.archiveCode}`,
-            ],
-          ],
-        },
-        margin: [0, 2, 0, 15],
-        layout: {
-          hLineWidth: (i) => (i + 1) % 2,
-          vLineWidth: (i) => (i + 1) % 2,
-          paddingTop: () => 3,
-          paddingBottom: () => 0,
-        },
-      },
-      {
-        text: "Ekspedisi Intern",
-        style: {
-          fontSize: 12,
-          bold: true,
-          decoration: "underline",
-        },
-      },
+      { text: "Ekspedisi", style: "subheader" },
       layoutInternals,
     ],
 
@@ -224,9 +193,9 @@ function getDocDefinition(report) {
         bold: true,
       },
       subheader: {
-        alignment: "center",
-        fontSize: 14,
+        fontSize: 12,
         bold: true,
+        decoration: "underline",
       },
       contact: {
         alignment: "center",
@@ -238,48 +207,31 @@ function getDocDefinition(report) {
   };
 }
 
-/**
- * Separate considerations & dispositions
- * @param {*} reportDispositions
- */
-function filterDispositions(reportDispositions) {
-  const considerations = [["Jabatan", "Usul / Pertimbangan", "Tanggal"]];
-  const dispositions = [["Diteruskan Ke", "Isi Disposisi", "Tanggal"]];
-
-  reportDispositions.forEach((element) => {
-    if (element.level != 1) {
-      considerations.push([element.name, element.note, element.date]);
-    } else {
-      dispositions.push([element.name, element.note, element.date]);
-    }
+function filterDispositions(items) {
+  const row = [["Diteruskan Ke", "Isi Disposisi", "Tanggal"]];
+  items.forEach((element) => {
+    row.push([element.name, element.note, element.date]);
   });
 
-  return [considerations, dispositions];
+  return row;
 }
 
-/**
- * Separate expeditions, return equal list if separate = false
- * @param {*} reportExpeditions
- * @param {*} separate
- */
-function filterExpeditions(reportExpeditions, separate) {
-  const externals = [["No", "Tgl Kirim", "Pengirim"]];
-  const internals = [["No", "Tgl Kirim", "Penerima", "Dibaca"]];
-
-  reportExpeditions.forEach((element) => {
-    if (element.type == 1)
-      externals.push([externals.length, element.date, element.name]);
-
-    if (!separate || element.type == 2)
-      internals.push([
-        internals.length,
-        element.date,
-        element.name,
-        element.read,
-      ]);
+function filterFollowups(items) {
+  const row = [["No", "Tgl Kirim", "Penerima", "Dibaca"]];
+  items.forEach((element) => {
+    row.push([row.length, element.date, element.name, element.read]);
   });
 
-  return [externals, internals];
+  return row;
+}
+
+function filterExpeditions(items) {
+  const row = [["No", "Tgl Kirim", "Penerima", "Dibaca"]];
+  items.forEach((element) => {
+    row.push([row.length, element.date, element.name, element.read]);
+  });
+
+  return row;
 }
 
 module.exports = router;
