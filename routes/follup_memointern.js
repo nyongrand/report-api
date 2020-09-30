@@ -100,11 +100,9 @@ function getDocDefinition(report) {
     },
     margin: [0, 5, 0, 15],
     layout: {
-      hLineWidth: (i) => (i == 0 ? 2 : 0),
+      hLineWidth: (i) => (i % 4 == 0 ? 1 : 0),
       vLineWidth: () => 0,
       hLineColor: () => "#AAAAAA",
-      paddingTop: () => 5,
-      paddingBottom: () => 2,
     },
   };
 
@@ -215,8 +213,8 @@ function filterDispositions(items) {
 
 function createFollowupsRows(items) {
   const row = [];
-  items.forEach((element) => {
-    row.push([row.length + 1, { colSpan: 2, text: element.name }, ""]);
+  items.forEach((element, index) => {
+    row.push([index + 1, { colSpan: 2, text: element.name, bold: true }, ""]);
     row.push(["", `Tgl. Kirim ${element.date}`, element.read]);
     row.push(["", { colSpan: 2, text: "Isi Tindak Lanjut:" }, ""]);
     row.push(["", { colSpan: 2, text: element.note }, ""]);
