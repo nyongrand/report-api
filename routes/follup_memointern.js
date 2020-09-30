@@ -57,20 +57,14 @@ function getDocDefinition(report) {
     },
     margin: [0, 10, 0, 10],
     layout: {
-      hLineWidth: function (i, node) {
-        if (i === 0 || i === node.table.body.length) return 1;
-        if (i === 1 || i === node.table.body.length - 1) return 2;
+      hLineWidth: function (i) {
+        if (i % 7 === 0) return 1;
+        if (i % 5 === 1) return 2;
         return 0;
       },
-      paddingBottom: function (i, node) {
-        if (i === 1 || i === node.table.body.length - 2) return 3;
-        return 1;
-      },
-      paddingTop: function (i, node) {
-        if (i === 1 || i === node.table.body.length - 2) return 3;
-        return 1;
-      },
       vLineWidth: () => 0,
+      paddingTop: (i) => (i === 2 ? 5 : 1),
+      paddingBottom: (i) => (i === 5 ? 4 : 1),
     },
   };
 
@@ -83,10 +77,10 @@ function getDocDefinition(report) {
     margin: [0, 5, 0, 15],
     layout: {
       fillColor: (row) => (row === 0 ? "#CCCCCC" : null),
-      hLineWidth: (i) => (i > 1 ? 1 : 0),
-      vLineWidth: () => 0,
       hLineColor: () => "#AAAAAA",
       hLineStyle: () => ({ dash: { length: 2 } }),
+      hLineWidth: (i) => (i > 1 ? 1 : 0),
+      vLineWidth: () => 0,
       paddingTop: () => 5,
       paddingBottom: () => 2,
     },
