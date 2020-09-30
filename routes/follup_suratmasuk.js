@@ -1,3 +1,5 @@
+"use strict";
+var methods = require("../commons/methods.js");
 var express = require("express");
 var router = express.Router();
 
@@ -30,9 +32,9 @@ function getDocDefinition(report) {
   const address = "Jl. Jaksa Agung Suprapto No. 76 RT 03 RW 03 Lamongan";
   const phone = "Telp. 0322-322834 (Hunting) Fax. 0322-314048";
 
-  const dispositions = dispositionsRow(report.dispositions, (_) => true);
-  const followups = followupsRow(report.followups);
-  const expeditions = expeditionsRow(report.expeditions, (_) => true);
+  const dispositions = methods.dispositionsRow(report.dispositions);
+  const followups = methods.followupsRow(report.followups);
+  const expeditions = methods.expeditionsIntRow(report.expeditions);
 
   // report details
   const layoutDetails = {
@@ -68,7 +70,6 @@ function getDocDefinition(report) {
       widths: [100, "*", 75],
       body: dispositions,
     },
-    margin: [0, 5, 0, 15],
     layout: {
       fillColor: (row) => (row === 0 ? "#CCCCCC" : null),
       hLineColor: () => "#AAAAAA",
@@ -78,6 +79,7 @@ function getDocDefinition(report) {
       paddingTop: () => 5,
       paddingBottom: () => 2,
     },
+    margin: [0, 5, 0, 15],
   };
 
   // follow up list
@@ -190,42 +192,6 @@ function getDocDefinition(report) {
       },
     },
   };
-}
-
-function dispositionsRow(items, filter) {
-  const row = [["Jabatan", "Isi Disposisi", "Tanggal"]];
-  items.forEach((element) => {
-    if (filter(element.level))
-      row.push([element.name, element.note, element.date]);
-  });
-
-  return row;
-}
-
-function followupsRow(items) {
-  const row = [];
-  items.forEach((element, index) => {
-    row.push([index + 1, { colSpan: 2, text: element.name, bold: true }, ""]);
-    row.push(["", `Tgl. Kirim ${element.date}`, element.read]);
-    row.push([
-      "",
-      { colSpan: 2, text: "Isi Tindak Lanjut:", margin: [0, 5, 0, 0] },
-      "",
-    ]);
-    row.push(["", { colSpan: 2, text: element.note }, ""]);
-  });
-
-  return row;
-}
-
-function expeditionsRow(items, filter) {
-  const row = [["No", "Tgl Kirim", "Penerima", "Dibaca"]];
-  items.forEach((element) => {
-    if (filter(element.type))
-      row.push([row.length, element.date, element.name, element.read]);
-  });
-
-  return row;
 }
 
 module.exports = router;
