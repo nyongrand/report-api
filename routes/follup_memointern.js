@@ -102,10 +102,9 @@ function getDocDefinition(report) {
       hLineWidth: (i) => (i % 4 == 0 ? 1 : 0),
       vLineWidth: () => 0,
       hLineColor: () => "#AAAAAA",
-      paddingTop: () => 0,
-      paddingBottom: () => 0,
+      paddingBottom: (i) => (i % 4 === 3 ? 2 : 0),
+      paddingTop: (i) => (i % 4 === 0 ? 2 : 0),
     },
-    lineHeight: 1,
     margin: [0, 5, 0, 15],
   };
 
