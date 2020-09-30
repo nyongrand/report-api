@@ -1,3 +1,5 @@
+"use strict";
+var methods = require("../commons/methods.js");
 var express = require("express");
 var router = express.Router();
 
@@ -27,35 +29,39 @@ router.post("/", function (req, res) {
  */
 function getDocDefinition(report) {
   const instansi = "RUMAH SAKIT MUHAMMADIYAH LAMONGAN";
-  const contact =
-    "Jl. Jaksa Agung Suprapto No. 76 RT 03 RW 03 Lamongan, Telp. 0322-322834 (Hunting) Fax. 0322-314048";
+  const address = "Jl. Jaksa Agung Suprapto No. 76 RT 03 RW 03 Lamongan";
+  const phone = "Telp. 0322-322834 (Hunting) Fax. 0322-314048";
 
-  // considerations & disposisi list
-  const [considerations, dispositions] = filterDispositions(
-    report.dispositions
-  );
-
-  // ekspedisi list
-  const [, internals] = filterExpeditions(report.expeditions, false);
+  const considerations = methods.considerationRow(report.dispositions);
+  const dispositions = methods.dispositionsRow(report.dispositions);
+  const expeditions = methods.expeditionsAllRow(report.expeditions);
 
   // report details
   const layoutDetails = {
     table: {
       widths: [90, "auto", "*"],
       body: [
+        ["", "", ""],
+        ["", "", ""],
         ["Nomor Surat", ":", report.refNumber],
         ["Tanggal Surat", ":", report.sent],
         ["Pengirim", ":", report.sender],
         ["Isi Surat", ":", report.subject],
+        ["", "", ""],
+        ["", "", ""],
       ],
     },
-    margin: [0, 5, 0, 20],
     layout: {
-      hLineWidth: function (i, node) {
-        return i === node.table.body.length ? 1 : 0;
+      hLineWidth: function (i) {
+        if (i % 7 === 0) return 1;
+        if (i % 5 === 1) return 2;
+        return 0;
       },
       vLineWidth: () => 0,
+      paddingTop: (i) => (i === 2 ? 5 : 1),
+      paddingBottom: (i) => (i === 5 ? 4 : 1),
     },
+    margin: [0, 10, 0, 10],
   };
 
   // consideration list
@@ -64,17 +70,16 @@ function getDocDefinition(report) {
       widths: [100, "*", 75],
       body: considerations,
     },
-    margin: [0, 5, 0, 15],
     layout: {
+      fillColor: (row) => (row === 0 ? "#CCCCCC" : null),
+      hLineColor: () => "#AAAAAA",
+      hLineStyle: () => ({ dash: { length: 2 } }),
       hLineWidth: (i) => (i > 1 ? 1 : 0),
       vLineWidth: () => 0,
-      hLineColor: () => "#AAAAAA",
-      fillColor: function (row) {
-        return row === 0 ? "#CCCCCC" : null;
-      },
       paddingTop: () => 5,
       paddingBottom: () => 2,
     },
+    margin: [0, 5, 0, 15],
   };
 
   // disposition list
@@ -83,25 +88,24 @@ function getDocDefinition(report) {
       widths: [100, "*", 75],
       body: dispositions,
     },
-    margin: [0, 5, 0, 15],
     layout: {
+      fillColor: (row) => (row === 0 ? "#CCCCCC" : null),
+      hLineColor: () => "#AAAAAA",
+      hLineStyle: () => ({ dash: { length: 2 } }),
       hLineWidth: (i) => (i > 1 ? 1 : 0),
       vLineWidth: () => 0,
-      hLineColor: () => "#AAAAAA",
-      fillColor: function (row) {
-        return row === 0 ? "#CCCCCC" : null;
-      },
       paddingTop: () => 5,
       paddingBottom: () => 2,
     },
+    margin: [0, 5, 0, 15],
     pageBreak: "after",
   };
 
   // expedition list
-  const layoutInternals = {
+  const layoutExpeditions = {
     table: {
       widths: ["auto", "auto", "*", "auto"],
-      body: internals,
+      body: expeditions,
     },
     margin: [0, 5, 0, 15],
     layout: {
@@ -125,9 +129,9 @@ function getDocDefinition(report) {
     },
 
     content: [
-      { text: `LEMBAR PENGIRIMAN ${report.title}`, style: "header" },
-      { text: instansi, style: "subheader" },
-      { text: contact, style: "contact" },
+      { text: `LEMBAR DISPOSISI ${report.title}`, style: "header" },
+      { text: instansi, style: "header" },
+      { text: `${address}, ${phone}`, style: "contact" },
 
       { text: `ID: ${report.id}` },
       {
@@ -152,7 +156,6 @@ function getDocDefinition(report) {
             ],
           ],
         },
-        margin: [0, 2, 0, 15],
         layout: {
           hLineWidth: (i) => (i + 1) % 2,
           vLineWidth: (i) => (i + 1) % 2,
@@ -160,21 +163,18 @@ function getDocDefinition(report) {
           paddingBottom: () => 0,
         },
       },
+
       layoutDetails,
-      {
-        text: "Hasil Disposisi",
-        style: {
-          fontSize: 12,
-          bold: true,
-          decoration: "underline",
-        },
-      },
+
+      { text: "Pertimbangan", style: "subheader" },
       layoutConsiderations,
+
+      { text: "Disposisi", style: "subheader" },
       layoutDispositions,
 
-      { text: report.title, style: "header" },
-      { text: instansi, style: "subheader" },
-      { text: contact, style: "contact" },
+      { text: `LEMBAR EKSPEDISI ${report.title}`, style: "header" },
+      { text: instansi, style: "header" },
+      { text: `${address}, ${phone}`, style: "contact" },
 
       {
         table: {
@@ -206,15 +206,9 @@ function getDocDefinition(report) {
           paddingBottom: () => 0,
         },
       },
-      {
-        text: "Ekspedisi Intern",
-        style: {
-          fontSize: 12,
-          bold: true,
-          decoration: "underline",
-        },
-      },
-      layoutInternals,
+
+      { text: "Ekspedisi", style: "subheader" },
+      layoutExpeditions,
     ],
 
     styles: {
@@ -224,9 +218,9 @@ function getDocDefinition(report) {
         bold: true,
       },
       subheader: {
-        alignment: "center",
-        fontSize: 14,
+        fontSize: 12,
         bold: true,
+        decoration: "underline",
       },
       contact: {
         alignment: "center",
@@ -236,50 +230,6 @@ function getDocDefinition(report) {
       },
     },
   };
-}
-
-/**
- * Separate considerations & dispositions
- * @param {*} reportDispositions
- */
-function filterDispositions(reportDispositions) {
-  const considerations = [["Jabatan", "Usul / Pertimbangan", "Tanggal"]];
-  const dispositions = [["Diteruskan Ke", "Isi Disposisi", "Tanggal"]];
-
-  reportDispositions.forEach((element) => {
-    if (element.level != 1) {
-      considerations.push([element.name, element.note, element.date]);
-    } else {
-      dispositions.push([element.name, element.note, element.date]);
-    }
-  });
-
-  return [considerations, dispositions];
-}
-
-/**
- * Separate expeditions, return equal list if separate = false
- * @param {*} reportExpeditions
- * @param {*} separate
- */
-function filterExpeditions(reportExpeditions, separate) {
-  const externals = [["No", "Tgl Kirim", "Pengirim"]];
-  const internals = [["No", "Tgl Kirim", "Penerima", "Dibaca"]];
-
-  reportExpeditions.forEach((element) => {
-    if (element.type == 1)
-      externals.push([externals.length, element.date, element.name]);
-
-    if (!separate || element.type == 2)
-      internals.push([
-        internals.length,
-        element.date,
-        element.name,
-        element.read,
-      ]);
-  });
-
-  return [externals, internals];
 }
 
 module.exports = router;
