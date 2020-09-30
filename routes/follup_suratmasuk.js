@@ -30,9 +30,9 @@ function getDocDefinition(report) {
   const address = "Jl. Jaksa Agung Suprapto No. 76 RT 03 RW 03 Lamongan";
   const phone = "Telp. 0322-322834 (Hunting) Fax. 0322-314048";
 
-  const dispositions = dispositionsRow(report.dispositions);
+  const dispositions = dispositionsRow(report.dispositions, (_) => true);
   const followups = followupsRow(report.followups);
-  const expeditions = expeditionsRow(report.expeditions);
+  const expeditions = expeditionsRow(report.expeditions, (_) => true);
 
   // report details
   const layoutDetails = {
@@ -192,10 +192,11 @@ function getDocDefinition(report) {
   };
 }
 
-function dispositionsRow(items) {
-  const row = [["Diteruskan Ke", "Isi Disposisi", "Tanggal"]];
+function dispositionsRow(items, filter) {
+  const row = [["Jabatan", "Isi Disposisi", "Tanggal"]];
   items.forEach((element) => {
-    row.push([element.name, element.note, element.date]);
+    if (filter(element.level))
+      row.push([element.name, element.note, element.date]);
   });
 
   return row;
@@ -217,10 +218,11 @@ function followupsRow(items) {
   return row;
 }
 
-function expeditionsRow(items) {
+function expeditionsRow(items, filter) {
   const row = [["No", "Tgl Kirim", "Penerima", "Dibaca"]];
   items.forEach((element) => {
-    row.push([row.length, element.date, element.name, element.read]);
+    if (filter(element.type))
+      row.push([row.length, element.date, element.name, element.read]);
   });
 
   return row;
