@@ -31,13 +31,13 @@ function getDocDefinition(report) {
   const phone = "Telp. 0322-322834 (Hunting) Fax. 0322-314048";
 
   // considerations & disposisi list
-  const dispositions = filterDispositions(report.dispositions);
+  const dispositions = dispositionsRow(report.dispositions);
 
   // follow ups
-  const followups = createFollowupsRows(report.followups);
+  const followups = followupsRow(report.followups);
 
   // ekspedisi list
-  const expeditions = filterExpeditions(report.expeditions);
+  const expeditions = expeditionsRow(report.expeditions);
 
   // report details
   const layoutDetails = {
@@ -58,13 +58,13 @@ function getDocDefinition(report) {
     margin: [0, 10, 0, 10],
     layout: {
       hLineWidth: function (i) {
-        if (i % 7 === 0) return 1;
-        if (i % 5 === 1) return 2;
+        if (i % 8 === 0) return 1;
+        if (i % 6 === 1) return 2;
         return 0;
       },
       vLineWidth: () => 0,
       paddingTop: (i) => (i === 2 ? 5 : 1),
-      paddingBottom: (i) => (i === 5 ? 4 : 1),
+      paddingBottom: (i) => (i === 6 ? 4 : 1),
     },
   };
 
@@ -198,7 +198,7 @@ function getDocDefinition(report) {
   };
 }
 
-function filterDispositions(items) {
+function dispositionsRow(items) {
   const row = [["Diteruskan Ke", "Isi Disposisi", "Tanggal"]];
   items.forEach((element) => {
     row.push([element.name, element.note, element.date]);
@@ -207,7 +207,7 @@ function filterDispositions(items) {
   return row;
 }
 
-function createFollowupsRows(items) {
+function followupsRow(items) {
   const row = [];
   items.forEach((element, index) => {
     row.push([index + 1, { colSpan: 2, text: element.name, bold: true }, ""]);
@@ -223,7 +223,7 @@ function createFollowupsRows(items) {
   return row;
 }
 
-function filterExpeditions(items) {
+function expeditionsRow(items) {
   const row = [["No", "Tgl Kirim", "Penerima", "Dibaca"]];
   items.forEach((element) => {
     row.push([row.length, element.date, element.name, element.read]);

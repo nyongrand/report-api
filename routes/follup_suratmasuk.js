@@ -31,13 +31,13 @@ function getDocDefinition(report) {
   const phone = "Telp. 0322-322834 (Hunting) Fax. 0322-314048";
 
   // considerations & disposisi list
-  const dispositions = filterDispositions(report.dispositions);
+  const dispositions = dispositionsRow(report.dispositions);
 
   // follow ups
-  const followups = filterFollowups(report.followups);
+  const followups = followupsRow(report.followups);
 
   // ekspedisi list
-  const expeditions = filterExpeditions(report.expeditions);
+  const expeditions = expeditionsRow(report.expeditions);
 
   // report details
   const layoutDetails = {
@@ -56,20 +56,14 @@ function getDocDefinition(report) {
     },
     margin: [0, 10, 0, 10],
     layout: {
-      hLineWidth: function (i, node) {
-        if (i === 0 || i === node.table.body.length) return 1;
-        if (i === 1 || i === node.table.body.length - 1) return 2;
+      hLineWidth: function (i) {
+        if (i % 7 === 0) return 1;
+        if (i % 5 === 1) return 2;
         return 0;
       },
-      paddingBottom: function (i, node) {
-        if (i === 1 || i === node.table.body.length - 2) return 3;
-        return 1;
-      },
-      paddingTop: function (i, node) {
-        if (i === 1 || i === node.table.body.length - 2) return 3;
-        return 1;
-      },
       vLineWidth: () => 0,
+      paddingTop: (i) => (i === 2 ? 5 : 1),
+      paddingBottom: (i) => (i === 5 ? 4 : 1),
     },
   };
 
@@ -82,10 +76,10 @@ function getDocDefinition(report) {
     margin: [0, 5, 0, 15],
     layout: {
       fillColor: (row) => (row === 0 ? "#CCCCCC" : null),
-      hLineWidth: (i) => (i > 1 ? 1 : 0),
-      vLineWidth: () => 0,
       hLineColor: () => "#AAAAAA",
       hLineStyle: () => ({ dash: { length: 2 } }),
+      hLineWidth: (i) => (i > 1 ? 1 : 0),
+      vLineWidth: () => 0,
       paddingTop: () => 5,
       paddingBottom: () => 2,
     },
@@ -94,24 +88,21 @@ function getDocDefinition(report) {
   // follow up list
   const layoutFollowups = {
     table: {
-      widths: ["auto", "auto", "*", "auto"],
+      widths: ["auto", "*", "auto"],
       body: followups,
     },
-    margin: [0, 5, 0, 15],
     layout: {
-      hLineWidth: () => 0,
+      hLineWidth: (i) => (i % 4 == 0 ? 1 : 0),
       vLineWidth: () => 0,
       hLineColor: () => "#AAAAAA",
-      fillColor: function (row) {
-        return row === 0 ? "#CCCCCC" : null;
-      },
-      paddingTop: () => 5,
-      paddingBottom: () => 2,
+      paddingTop: (i) => (i % 4 === 0 ? 4 : 0),
+      paddingBottom: (i) => (i % 4 === 3 ? 2 : 0),
     },
+    margin: [0, 5, 0, 15],
   };
 
   // expedition list
-  const layoutInternals = {
+  const layoutExpeditions = {
     table: {
       widths: ["auto", "auto", "*", "auto"],
       body: expeditions,
@@ -182,7 +173,7 @@ function getDocDefinition(report) {
       layoutFollowups,
 
       { text: "Ekspedisi", style: "subheader" },
-      layoutInternals,
+      layoutExpeditions,
     ],
 
     styles: {
@@ -206,7 +197,7 @@ function getDocDefinition(report) {
   };
 }
 
-function filterDispositions(items) {
+function dispositionsRow(items) {
   const row = [["Diteruskan Ke", "Isi Disposisi", "Tanggal"]];
   items.forEach((element) => {
     row.push([element.name, element.note, element.date]);
@@ -215,16 +206,23 @@ function filterDispositions(items) {
   return row;
 }
 
-function filterFollowups(items) {
-  const row = [["No", "Tgl Kirim", "Penerima", "Dibaca"]];
-  items.forEach((element) => {
-    row.push([row.length, element.date, element.name, element.read]);
+function followupsRow(items) {
+  const row = [];
+  items.forEach((element, index) => {
+    row.push([index + 1, { colSpan: 2, text: element.name, bold: true }, ""]);
+    row.push(["", `Tgl. Kirim ${element.date}`, element.read]);
+    row.push([
+      "",
+      { colSpan: 2, text: "Isi Tindak Lanjut:", margin: [0, 5, 0, 0] },
+      "",
+    ]);
+    row.push(["", { colSpan: 2, text: element.note }, ""]);
   });
 
   return row;
 }
 
-function filterExpeditions(items) {
+function expeditionsRow(items) {
   const row = [["No", "Tgl Kirim", "Penerima", "Dibaca"]];
   items.forEach((element) => {
     row.push([row.length, element.date, element.name, element.read]);
