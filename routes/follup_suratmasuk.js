@@ -32,7 +32,7 @@ function getDocDefinition(report) {
   const address = "Jl. Jaksa Agung Suprapto No. 76 RT 03 RW 03 Lamongan";
   const phone = "Telp. 0322-322834 (Hunting) Fax. 0322-314048";
 
-  const dispositions = methods.dispositionsRow(report.dispositions);
+  const dispositions = methods.dispositionsAllRow(report.dispositions);
   const followups = methods.followupsRow(report.followups);
   const expeditions = methods.expeditionsIntRow(report.expeditions);
 

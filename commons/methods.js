@@ -21,6 +21,15 @@ module.exports = {
     return row;
   },
 
+  dispositionsAllRow: function (items) {
+    const row = [["Jabatan", "Isi Disposisi", "Tanggal"]];
+    items.forEach((element) => {
+      row.push([element.name, element.note, element.date]);
+    });
+
+    return row;
+  },
+
   followupsRow: function (items) {
     const row = [];
     items.forEach((element, index) => {
@@ -51,7 +60,7 @@ module.exports = {
   expeditionsIntRow: function (items) {
     const row = [["No", "Tgl Kirim", "Penerima", "Dibaca"]];
     items
-      .filter((element) => element.type === 1)
+      .filter((element) => element.type === 2)
       .forEach((element) => {
         row.push([row.length, element.date, element.name, element.read]);
       });
