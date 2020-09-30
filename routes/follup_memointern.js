@@ -98,12 +98,13 @@ function getDocDefinition(report) {
       widths: ["auto", "*", "auto"],
       body: followups,
     },
-    margin: [0, 5, 0, 15],
     layout: {
       hLineWidth: (i) => (i % 4 == 0 ? 1 : 0),
       vLineWidth: () => 0,
       hLineColor: () => "#AAAAAA",
     },
+    lineHeight: 0.8,
+    margin: [0, 5, 0, 15],
   };
 
   // expedition list
@@ -221,13 +222,6 @@ function createFollowupsRows(items) {
   });
 
   return row;
-
-  // const row = [["No", "Tgl Kirim", "Penerima", "Dibaca"]];
-  // items.forEach((element) => {
-  //   row.push([row.length, element.date, element.name, element.read]);
-  // });
-
-  // return row;
 }
 
 function filterExpeditions(items) {
