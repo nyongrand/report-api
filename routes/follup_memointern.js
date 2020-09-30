@@ -34,7 +34,7 @@ function getDocDefinition(report) {
   const dispositions = filterDispositions(report.dispositions);
 
   // follow ups
-  const followups = filterFollowups(report.followups);
+  const followups = createFollowupsRows(report.followups);
 
   // ekspedisi list
   const expeditions = filterExpeditions(report.expeditions);
@@ -95,24 +95,21 @@ function getDocDefinition(report) {
   // follow up list
   const layoutFollowups = {
     table: {
-      widths: ["auto", "auto", "*", "auto"],
+      widths: ["auto", "*", "auto"],
       body: followups,
     },
     margin: [0, 5, 0, 15],
     layout: {
-      hLineWidth: () => 0,
+      hLineWidth: (i) => (i == 0 ? 2 : 0),
       vLineWidth: () => 0,
       hLineColor: () => "#AAAAAA",
-      fillColor: function (row) {
-        return row === 0 ? "#CCCCCC" : null;
-      },
       paddingTop: () => 5,
       paddingBottom: () => 2,
     },
   };
 
   // expedition list
-  const layoutInternals = {
+  const layoutExpeditions = {
     table: {
       widths: ["auto", "auto", "*", "auto"],
       body: expeditions,
@@ -183,7 +180,7 @@ function getDocDefinition(report) {
       layoutFollowups,
 
       { text: "Ekspedisi", style: "subheader" },
-      layoutInternals,
+      layoutExpeditions,
     ],
 
     styles: {
@@ -216,13 +213,23 @@ function filterDispositions(items) {
   return row;
 }
 
-function filterFollowups(items) {
-  const row = [["No", "Tgl Kirim", "Penerima", "Dibaca"]];
+function createFollowupsRows(items) {
+  const row = [];
   items.forEach((element) => {
-    row.push([row.length, element.date, element.name, element.read]);
+    row.push([row.length + 1, { colSpan: 2, text: element.name }, ""]);
+    row.push(["", `Tgl. Kirim ${element.date}`, element.read]);
+    row.push(["", { colSpan: 2, text: "Isi Tindak Lanjut:" }, ""]);
+    row.push(["", { colSpan: 2, text: element.note }, ""]);
   });
 
   return row;
+
+  // const row = [["No", "Tgl Kirim", "Penerima", "Dibaca"]];
+  // items.forEach((element) => {
+  //   row.push([row.length, element.date, element.name, element.read]);
+  // });
+
+  // return row;
 }
 
 function filterExpeditions(items) {
