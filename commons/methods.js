@@ -67,4 +67,13 @@ module.exports = {
 
     return row;
   },
+
+  expeditionsAllRow: function (items) {
+    const row = [["No", "Tgl Kirim", "Penerima", "Dibaca"]];
+    items.forEach((element) => {
+      row.push([row.length, element.date, element.name, element.read]);
+    });
+
+    return row;
+  },
 };

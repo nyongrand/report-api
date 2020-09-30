@@ -34,7 +34,7 @@ function getDocDefinition(report) {
 
   const dispositions = methods.dispositionsAllRow(report.dispositions);
   const followups = methods.followupsRow(report.followups);
-  const expeditions = methods.expeditionsIntRow(report.expeditions);
+  const expeditions = methods.expeditionsAllRow(report.expeditions);
 
   // report details
   const layoutDetails = {
